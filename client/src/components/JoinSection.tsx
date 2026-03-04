@@ -2,6 +2,7 @@
  * JoinSection — PNU Alliance (고도화)
  * - 실제 작동하는 합류 신청 폼 (2단계)
  * - 폼 유효성 검사 + 성공 애니메이션
+ * - Google Apps Script 연동
  */
 import { motion, useInView, AnimatePresence } from "framer-motion";
 import { useRef, useState } from "react";
@@ -23,6 +24,9 @@ const INIT: FormData = {
   name:"",email:"",phone:"",graduationYear:"",major:"",
   company:"",position:"",industry:"",motivation:"",referral:"",
 };
+
+// Google Apps Script 웹 앱 URL
+const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycby1RQkSrNuz10UD6M4ETGot4zRWVpxkNkitpsfzYXOBx2RIxaO4WuqEfB9YbyOhwLKM0Q/exec";
 
 function Field({ label, name, value, onChange, placeholder, type="text", required=false }: {
   label: string; name: keyof FormData; value: string;
@@ -77,10 +81,32 @@ export default function JoinSection() {
     if (step === 1 && validateStep1()) { setStep(2); return; }
     if (step === 2 && validateStep2()) {
       setSubmitting(true);
-      await new Promise(r => setTimeout(r, 1800));
-      setSubmitting(false);
-      setSubmitted(true);
-      setStep(3);
+      try {
+        const response = await fetch(GAS_WEB_APP_URL, {
+          method: "POST",
+          mode: "no-cors", // CORS 문제 회피
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            name: form.name,
+            majorStudentId: `${form.major} ${form.graduationYear}년`,
+            contact: form.phone || form.email, // 연락처 또는 이메일
+            commitment: form.motivation,
+          }),
+        });
+
+        // no-cors 모드에서는 응답을 직접 읽을 수 없으므로, 성공 여부는 네트워크 요청 자체로 판단
+        // 실제 GAS 스크립트가 성공적으로 실행되면 데이터가 기록됨
+        setSubmitted(true);
+        setStep(3);
+
+      } catch (error) {
+        console.error("폼 제출 오류:", error);
+        alert("폼 제출 중 오류가 발생했습니다. 다시 시도해주세요.");
+      } finally {
+        setSubmitting(false);
+      }
     }
   };
 
@@ -132,10 +158,10 @@ export default function JoinSection() {
               <div className="flex items-center gap-3 mb-8">
                 {[1,2].map(s => (
                   <div key={s} className="flex items-center gap-3">
-                    <div className={`w-7 h-7 flex items-center justify-center text-xs transition-all duration-300 ${step >= s ? "bg-gold text-charcoal-deep" : "border border-gold/20 text-ivory/30"}`} style={{fontFamily:"var(--font-body)",fontWeight:500}}>
+                    <div className="w-7 h-7 flex items-center justify-center text-xs transition-all duration-300 ${step >= s ? "bg-gold text-charcoal-deep" : "border border-gold/20 text-ivory/30"}" style={{fontFamily:"var(--font-body)",fontWeight:500}}>
                       {step > s ? <Check size={12} /> : s}
                     </div>
-                    <span className={`text-xs tracking-[0.15em] uppercase transition-colors duration-300 ${step >= s ? "text-ivory/60" : "text-ivory/25"}`} style={{fontFamily:"var(--font-body)",fontWeight:300}}>
+                    <span className="text-xs tracking-[0.15em] uppercase transition-colors duration-300 ${step >= s ? "text-ivory/60" : "text-ivory/25"}" style={{fontFamily:"var(--font-body)",fontWeight:300}}>
                       {s === 1 ? "기본 정보" : "상세 정보"}
                     </span>
                     {s < 2 && <div className="w-8 h-px bg-gold/20" />}
