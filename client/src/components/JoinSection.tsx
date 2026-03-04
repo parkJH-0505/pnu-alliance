@@ -158,10 +158,10 @@ export default function JoinSection() {
               <div className="flex items-center gap-3 mb-8">
                 {[1,2].map(s => (
                   <div key={s} className="flex items-center gap-3">
-                    <div className="w-7 h-7 flex items-center justify-center text-xs transition-all duration-300 ${step >= s ? "bg-gold text-charcoal-deep" : "border border-gold/20 text-ivory/30"}" style={{fontFamily:"var(--font-body)",fontWeight:500}}>
+                    <div className={`w-7 h-7 flex items-center justify-center text-xs transition-all duration-300 ${step >= s ? "bg-gold text-charcoal-deep" : "border border-gold/20 text-ivory/30"}`} style={{fontFamily:"var(--font-body)",fontWeight:500}}>
                       {step > s ? <Check size={12} /> : s}
                     </div>
-                    <span className="text-xs tracking-[0.15em] uppercase transition-colors duration-300 ${step >= s ? "text-ivory/60" : "text-ivory/25"}" style={{fontFamily:"var(--font-body)",fontWeight:300}}>
+                    <span className={`text-xs tracking-[0.15em] uppercase transition-colors duration-300 ${step >= s ? "text-ivory/60" : "text-ivory/25"}`} style={{fontFamily:"var(--font-body)",fontWeight:300}}>
                       {s === 1 ? "기본 정보" : "상세 정보"}
                     </span>
                     {s < 2 && <div className="w-8 h-px bg-gold/20" />}
