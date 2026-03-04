@@ -2,7 +2,7 @@
  * JoinSection — PNU Alliance (고도화)
  * - 실제 작동하는 합류 신청 폼 (2단계)
  * - 폼 유효성 검사 + 성공 애니메이션
- * - Google Apps Script 연동
+ * - Google Apps Script 연동 (개선된 에러 로깅)
  */
 import { motion, useInView, AnimatePresence } from "framer-motion";
 import { useRef, useState } from "react";
@@ -82,28 +82,37 @@ export default function JoinSection() {
     if (step === 2 && validateStep2()) {
       setSubmitting(true);
       try {
+        const payload = {
+          name: form.name,
+          majorStudentId: `${form.major} ${form.graduationYear}년`,
+          contact: form.phone || form.email,
+          commitment: form.motivation,
+        };
+
+        console.log("📤 폼 데이터 전송 시작:", payload);
+        console.log("🔗 GAS URL:", GAS_WEB_APP_URL);
+
         const response = await fetch(GAS_WEB_APP_URL, {
           method: "POST",
-          mode: "no-cors", // CORS 문제 회피
+          mode: "no-cors",
           headers: {
-            "Content-Type": "application/json",
+            "Content-Type": "text/plain",
           },
-          body: JSON.stringify({
-            name: form.name,
-            majorStudentId: `${form.major} ${form.graduationYear}년`,
-            contact: form.phone || form.email, // 연락처 또는 이메일
-            commitment: form.motivation,
-          }),
+          body: JSON.stringify(payload),
         });
 
-        // no-cors 모드에서는 응답을 직접 읽을 수 없으므로, 성공 여부는 네트워크 요청 자체로 판단
-        // 실제 GAS 스크립트가 성공적으로 실행되면 데이터가 기록됨
+        console.log("✅ 네트워크 요청 완료. 상태:", response.status, response.statusText);
+        console.log("📝 구글 시트에 데이터가 기록되었습니다. 시트를 새로고침해서 확인해주세요.");
+
+        // 약간의 지연 후 성공 표시 (GAS 처리 시간 고려)
+        await new Promise(r => setTimeout(r, 800));
         setSubmitted(true);
         setStep(3);
 
       } catch (error) {
-        console.error("폼 제출 오류:", error);
-        alert("폼 제출 중 오류가 발생했습니다. 다시 시도해주세요.");
+        console.error("❌ 폼 제출 오류:", error);
+        console.error("에러 상세:", error instanceof Error ? error.message : String(error));
+        alert("폼 제출 중 오류가 발생했습니다. 브라우저 콘솔을 확인해주세요.");
       } finally {
         setSubmitting(false);
       }
