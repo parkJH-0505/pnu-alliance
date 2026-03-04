@@ -84,9 +84,15 @@ export default function JoinSection() {
       try {
         const payload = {
           name: form.name,
-          majorStudentId: `${form.major} ${form.graduationYear}년`,
-          contact: form.phone || form.email,
-          commitment: form.motivation,
+          email: form.email,
+          phone: form.phone,
+          graduationYear: form.graduationYear,
+          major: form.major,
+          company: form.company,
+          position: form.position,
+          industry: form.industry,
+          motivation: form.motivation,
+          referral: form.referral,
         };
 
         console.log("📤 폼 데이터 전송 시작:", payload);
