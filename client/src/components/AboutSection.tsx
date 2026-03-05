@@ -103,7 +103,7 @@ export default function AboutSection() {
                   className="text-gold/50 text-xs tracking-[0.2em] uppercase not-italic mt-2 block"
                   style={{ fontFamily: "var(--font-body)", fontWeight: 300 }}
                 >
-                  — 이대한 선배, BAE Systems · 핵안보포럼
+                  — 이대한 선배, 한국핵안보전략포럼
                 </cite>
               </blockquote>
             </FadeIn>

@@ -49,7 +49,7 @@ const seniorQuotes = [
   {
     quote: "사람이 깡통이다. 무조건 사람 먼저 모아라.",
     author: "이대한",
-    field: "BAE Systems · 핵안보포럼",
+    field: "한국핵안보전략포럼",
   },
   {
     quote: "부산대학교로 신뢰 담보를 깔고 가는 거잖아요.",
@@ -74,7 +74,7 @@ const seniorQuotes = [
   {
     quote: "지금은 스카이가 롤모델이지만, 나중에는 후배님이 만든 게 롤모델이 되는 거예요.",
     author: "이대한",
-    field: "BAE Systems · 핵안보포럼",
+    field: "한국핵안보전략포럼",
   },
 ];
 

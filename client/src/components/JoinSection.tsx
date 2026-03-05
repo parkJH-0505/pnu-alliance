@@ -162,7 +162,7 @@ export default function JoinSection() {
                 "지금은 스카이가 롤모델이지만, 나중에는 후배님이 만든 게 롤모델이 되는 거예요."
               </p>
               <cite className="text-gold/40 text-xs tracking-[0.2em] uppercase not-italic mt-2 block" style={{fontFamily:"var(--font-body)",fontWeight:300}}>
-                — 이대한 선배, BAE Systems
+                — 이대한 선배, 한국핵안보전략포럼
               </cite>
             </blockquote>
           </motion.div>

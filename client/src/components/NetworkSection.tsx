@@ -162,7 +162,7 @@ export default function NetworkSection() {
             className="text-ivory/35 text-sm mb-8"
             style={{ fontFamily: "var(--font-body)", fontWeight: 300 }}
           >
-            "학교는 똑같은데, 다 분야가 달라요. 그래서 이 다양성이 참 귀하다." — 이대한 선배
+            "학교는 똑같은데, 다 분야가 달라요. 그래서 이 다양성이 참 귀하다." — 이대한 선배 (한국핵안보전략포럼)
           </p>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
             {industries.map((industry, i) => (
