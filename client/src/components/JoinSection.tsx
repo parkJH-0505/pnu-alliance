@@ -26,7 +26,7 @@ const INIT: FormData = {
 };
 
 // Google Apps Script 웹 앱 URL
-const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycby1RQkSrNuz10UD6M4ETGot4zRWVpxkNkitpsfzYXOBx2RIxaO4WuqEfB9YbyOhwLKM0Q/exec";
+const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxhTA7awEpit_Jdak6bhTJyXLRJQrSY02BARDP0bMVIit2KbcOIhcDbB9jFi6xMANO3rA/exec";
 
 function Field({ label, name, value, onChange, placeholder, type="text", required=false }: {
   label: string; name: keyof FormData; value: string;
