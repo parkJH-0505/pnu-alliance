@@ -11,9 +11,7 @@ import { useInView } from "framer-motion";
 const quotes = [
   { text: "사람이 깡통이다. 무조건 사람 먼저 모아라.", author: "이대한", company: "한국핵안보전략포럼" },
   { text: "부산대학교로 신뢰 담보를 깔고 가는 거잖아요.", author: "박재혁", company: "삼성SDS" },
-  { text: "처음에 눈덩이를 뭉치면 시럽고 힘들다. 그것만 잘하면 커진다.", author: "강경록", company: "크리에이팁" },
-  { text: "말하지 마. 들어.", author: "강경록", company: "크리에이팁" },
-  { text: "모으는 건 어렵지 않다. 유지하는 게 어렵다.", author: "노주현", company: "현대자동차" },
+  { text: "처음에 눈덩이를 뭉치면 시럽고 힘들다. 그것만 잘하면 커진다.", author: "강경록", company: "크리에이팁" },  { text: "모으는 건 어렵지 않다. 유지하는 게 어렵다.", author: "노주현", company: "현대자동차" },
   { text: "바로 해내야 됩니다.", author: "이창렬", company: "아마존" },
   { text: "고생은 이제 저까지만 하고 후배들부터는 조금 편하게 했으면.", author: "이대한", company: "한국핵안보전략포럼" },
   { text: "30대 중반 안에 인생 전체의 씨앗을 만들어야.", author: "이윤규", company: "변호사" },
