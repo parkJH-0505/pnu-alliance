@@ -7,7 +7,18 @@ const SHEET_ID = "1xa7YDW1kjvVr-oLwWZETjwhNAxJVFuXF1uXWLZoSXnk";
 
 // 구글 서비스 계정 인증 정보
 const getGoogleAuth = () => {
-  const serviceAccountJson = process.env.GOOGLE_SERVICE_ACCOUNT_JSON;
+  const b64 = process.env.GOOGLE_SERVICE_ACCOUNT_JSON_B64;
+  const raw = process.env.GOOGLE_SERVICE_ACCOUNT_JSON;
+  let serviceAccountJson: string | undefined;
+  if (b64) {
+    try {
+      serviceAccountJson = Buffer.from(b64, "base64").toString("utf-8");
+    } catch {
+      return null;
+    }
+  } else {
+    serviceAccountJson = raw;
+  }
   if (!serviceAccountJson) return null;
   try {
     return JSON.parse(serviceAccountJson);
@@ -16,6 +27,14 @@ const getGoogleAuth = () => {
   }
 };
 
+// private_key normalization: \\n → \n, \r 제거
+function normalizePrivateKey(pk: string | undefined): string {
+  return (pk || "")
+    .replace(/\\r/g, "")
+    .replace(/\\n/g, "\n")
+    .replace(/\r/g, "");
+}
+
 // 구글 시트 문서 초기화
 async function initializeGoogleSheet() {
   const serviceAccount = getGoogleAuth();
@@ -23,7 +42,7 @@ async function initializeGoogleSheet() {
   try {
     const doc = new GoogleSpreadsheet(SHEET_ID, new JWT({
       email: serviceAccount.client_email,
-      key: (serviceAccount.private_key || "").replace(/\\n/g, "\n"),
+      key: normalizePrivateKey(serviceAccount.private_key),
       scopes: ["https://www.googleapis.com/auth/spreadsheets"],
     }));
     await doc.loadInfo();
@@ -86,13 +105,26 @@ app.get("/api/_diag", async (req, res) => {
   let parseError = "";
   try { parsed = JSON.parse(envRaw); } catch (e: any) { parseError = e?.message || String(e); }
 
+  const pk: string = parsed?.private_key || "";
+  const pkNorm = normalizePrivateKey(pk);
   const result: any = {
     envPresent: !!envRaw,
     envLength: envRaw.length,
+    envSourceB64: !!process.env.GOOGLE_SERVICE_ACCOUNT_JSON_B64,
     parseable: !!parsed,
     parseError,
     serviceAccountEmail: parsed?.client_email || null,
     nodeVersion: process.version,
+    pk: {
+      origLength: pk.length,
+      normLength: pkNorm.length,
+      hasLiteralBackslashN: pk.includes("\\n"),
+      hasRealNewline: pk.includes("\n"),
+      hasCarriageReturn: pk.includes("\r"),
+      startsWithBegin: pkNorm.startsWith("-----BEGIN"),
+      endsWithEnd: pkNorm.trimEnd().endsWith("-----END PRIVATE KEY-----"),
+      lineCount: pkNorm.split("\n").length,
+    },
   };
 
   if (parsed) {
@@ -100,7 +132,7 @@ app.get("/api/_diag", async (req, res) => {
       const start = Date.now();
       const doc = new GoogleSpreadsheet(SHEET_ID, new JWT({
         email: parsed.client_email,
-        key: (parsed.private_key || "").replace(/\\n/g, "\n"),
+        key: pkNorm,
         scopes: ["https://www.googleapis.com/auth/spreadsheets"],
       }));
       await Promise.race([
