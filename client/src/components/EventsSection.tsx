@@ -255,10 +255,10 @@ function EventCard({ event, index, onRegisterClick }: { event: Event; index: num
 
 // 나선형 좌표 — 4개 카드 기준 (밖 → 안 시계방향)
 const SPIRAL_POSITIONS = [
-  { left: "40%", top: "2%", scale: 0.82, rotate: -3 },   // i=0 가장 최근, 가장 큼
-  { left: "5%", top: "28%", scale: 0.62, rotate: 6 },    // i=1
-  { left: "45%", top: "52%", scale: 0.48, rotate: -10 }, // i=2
-  { left: "18%", top: "72%", scale: 0.36, rotate: 14 },  // i=3 가장 옛, 가장 안쪽
+  { left: "28%", top: "0%", scale: 0.92, rotate: -3 },   // i=0 가장 최근, 가장 큼
+  { left: "0%", top: "30%", scale: 0.74, rotate: 6 },    // i=1
+  { left: "32%", top: "58%", scale: 0.58, rotate: -10 }, // i=2 가장 옛 (현재 노출 끝)
+  { left: "8%", top: "82%", scale: 0.46, rotate: 14 },   // i=3 (5차+ 시점용)
 ];
 
 function SpiralCard({
@@ -277,7 +277,7 @@ function SpiralCard({
         zIndex: 20 - index,
         transformOrigin: "center",
       }}
-      className="w-56 cursor-default"
+      className="w-64 cursor-default"
     >
       <div className="relative border border-gold/25 bg-charcoal hover:border-gold/55 transition-colors p-4 shadow-2xl overflow-hidden">
         {event.coverImage && (
