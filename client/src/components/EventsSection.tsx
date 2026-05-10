@@ -255,10 +255,10 @@ function EventCard({ event, index, onRegisterClick }: { event: Event; index: num
 
 // 나선형 좌표 — 4개 카드 기준 (밖 → 안 시계방향)
 const SPIRAL_POSITIONS = [
-  { left: "28%", top: "0%", scale: 0.92, rotate: -3 },   // i=0 가장 최근, 가장 큼
-  { left: "0%", top: "30%", scale: 0.74, rotate: 6 },    // i=1
-  { left: "32%", top: "58%", scale: 0.58, rotate: -10 }, // i=2 가장 옛 (현재 노출 끝)
-  { left: "8%", top: "82%", scale: 0.46, rotate: 14 },   // i=3 (5차+ 시점용)
+  { left: "20%", top: "0%", scale: 1.0, rotate: -3 },    // i=0 가장 최근, 가장 큼
+  { left: "-3%", top: "32%", scale: 0.85, rotate: 6 },   // i=1
+  { left: "25%", top: "62%", scale: 0.68, rotate: -10 }, // i=2 가장 옛 (현재 노출 끝)
+  { left: "5%", top: "88%", scale: 0.52, rotate: 14 },   // i=3 (5차+ 시점용)
 ];
 
 function SpiralCard({
@@ -269,7 +269,7 @@ function SpiralCard({
       initial={{ opacity: 0, scale: 0 }}
       animate={{ opacity: 1, scale: position.scale, rotate: position.rotate }}
       transition={{ duration: 0.8, delay: index * 0.15, ease: [0.22, 1, 0.36, 1] }}
-      whileHover={{ scale: 1, rotate: 0, zIndex: 30, transition: { duration: 0.3 } }}
+      whileHover={{ scale: 1.1, rotate: 0, zIndex: 30, transition: { duration: 0.3 } }}
       style={{
         position: "absolute",
         left: position.left,
@@ -277,7 +277,7 @@ function SpiralCard({
         zIndex: 20 - index,
         transformOrigin: "center",
       }}
-      className="w-64 cursor-default"
+      className="w-72 cursor-default"
     >
       <div className="relative border border-gold/25 bg-charcoal hover:border-gold/55 transition-colors p-4 shadow-2xl overflow-hidden">
         {event.coverImage && (
