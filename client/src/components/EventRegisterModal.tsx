@@ -460,7 +460,7 @@ export default function EventRegisterModal({ isOpen, onClose, event }: Props) {
                     이번 회차 — The Bridge
                   </p>
                   <div className="space-y-4">
-                    <Field label="인스타그램 ID" value={form.instagramId} onChange={(v) => updateField("instagramId", v)} placeholder="@your_id" />
+                    <Field label="인스타그램 ID 또는 링크드인 주소" value={form.instagramId} onChange={(v) => updateField("instagramId", v)} placeholder="@your_id 또는 linkedin.com/in/..." />
                     <Field label="초대해주신 분 (있으면)" value={form.referrerName} onChange={(v) => updateField("referrerName", v)} placeholder="예) 박준홍" />
                     <label className="flex items-start gap-2 cursor-pointer">
                       <input type="checkbox" checked={form.hasCompanion} onChange={(e) => updateField("hasCompanion", e.target.checked)} className="mt-0.5 accent-gold" />
