@@ -1,16 +1,15 @@
 {
+  "version": 2,
   "buildCommand": "pnpm build",
-  "outputDirectory": "dist",
-  "env": {
-    "NODE_ENV": "production"
-  },
+  "outputDirectory": "client/dist",
+  "framework": "vite",
   "rewrites": [
     {
       "source": "/api/trpc/:path*",
-      "destination": "/index.html"
+      "destination": "/api/trpc"
     },
     {
-      "source": "/:path((?!api|assets).*)",
+      "source": "/(.*)",
       "destination": "/index.html"
     }
   ]
