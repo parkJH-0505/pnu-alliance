@@ -121,9 +121,9 @@ export default function NetworkSection() {
           className="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-20"
         >
           {[
-            { label: "연결된 동문", value: 40, suffix: "+" },
-            { label: "업계 분포", value: 8, suffix: "+" },
-            { label: "오프라인 모임", value: 2, suffix: "회" },
+            { label: "연결된 동문", value: 48, suffix: "+" },
+            { label: "업계 분포", value: 10, suffix: "+" },
+            { label: "오프라인 모임", value: 3, suffix: "회" },
             { label: "선배 1:1 미팅", value: 7, suffix: "회" },
           ].map((stat) => (
             <div

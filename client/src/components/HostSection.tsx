@@ -19,6 +19,7 @@ const hosts = [
     quote: "부산대 출신이 서울에서 혼자 싸우지 않아도 되는 세상을 만들고 싶었습니다. 지방 거점국립대 출신의 구조적 불균형을 깨는 것이 출발점입니다.",
     tags: ["커뮤니티 빌더", "신뢰 기반 네트워크", "세대를 잇는 구조"],
     image: "/images/host-junhong.png",
+    linkedin: "https://www.linkedin.com/in/junhong-park-1138152aa/",
   },
   {
     id: "hyundu",
@@ -28,7 +29,8 @@ const hosts = [
     background: "부산대학교 기계공학과 17학번 졸업. 서울에서 스타트업 생태계에서 활동 중. PNU Alliance의 운영과 멤버 온보딩을 함께 주도하며, 커뮤니티의 지속가능한 성장을 위해 노력하고 있다.",
     quote: "같은 캠퍼스를 걷고, 같은 고민을 했던 사람들이 서울에서 만날 때 생기는 에너지가 있어요. 그 에너지를 구조화하고 지속시키는 것이 우리의 역할입니다.",
     tags: ["기계공학", "스타트업", "커뮤니티 운영"],
-    image: "/images/host-hyundu.png", // 추후 업로드 예정
+    image: "/images/host-hyundu.png",
+    linkedin: "https://www.linkedin.com/in/wiseheadhyundoo/",
   },
 ];
 
@@ -180,7 +182,7 @@ export default function HostSection() {
                       </a>
                       <span className="text-ivory/15">·</span>
                       <a
-                        href="https://linkedin.com"
+                        href={host.linkedin}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="flex items-center gap-1.5 text-ivory/30 text-xs hover:text-gold/60 transition-colors duration-300"

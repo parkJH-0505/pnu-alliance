@@ -112,8 +112,8 @@ export default function HeroSection() {
           className="flex items-center gap-8 mb-10"
         >
           {[
-            { value: "40+", label: "연결된 동문" },
-            { value: "2회", label: "오프라인 모임" },
+            { value: "48+", label: "연결된 동문" },
+            { value: "3회", label: "오프라인 모임" },
             { value: "7회", label: "선배 미팅" },
           ].map((stat) => (
             <div key={stat.label} className="flex flex-col">
