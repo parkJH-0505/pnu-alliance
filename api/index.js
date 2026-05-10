@@ -32,49 +32,49 @@ app.use(express.json());
 app.get("/api/events", async (req, res) => {
   try {
     const googleSheet = await initializeGoogleSheet();
-    if (!googleSheet) return res.status(500).json({ error: "\uAD6C\uAE00 \uC2DC\uD2B8 \uC5F0\uACB0 \uC2E4\uD328" });
-    const eventSheet = googleSheet.sheetsByTitle["\uC774\uBCA4\uD2B8"] || googleSheet.sheetsByTitle["Events"];
+    if (!googleSheet) return res.status(500).json({ error: "구글 시트 연결 실패" });
+    const eventSheet = googleSheet.sheetsByTitle["이벤트"] || googleSheet.sheetsByTitle["Events"];
     if (!eventSheet) return res.json({ events: [] });
     const rows = await eventSheet.getRows();
     const events = rows.map((row) => ({
-      id: row.get("\uD68C\uCC28") || "",
-      title: row.get("\uC81C\uBAA9") || "",
-      date: row.get("\uB0A0\uC9DC") || "",
-      time: row.get("\uC2DC\uAC04") || "",
-      location: row.get("\uC7A5\uC18C") || "",
-      description: row.get("\uC124\uBA85") || "",
-      capacity: parseInt(row.get("\uC815\uC6D0") || "0"),
-      registered: parseInt(row.get("\uC2E0\uCCAD\uC790") || "0")
+      id: row.get("회차") || "",
+      title: row.get("제목") || "",
+      date: row.get("날짜") || "",
+      time: row.get("시간") || "",
+      location: row.get("장소") || "",
+      description: row.get("설명") || "",
+      capacity: parseInt(row.get("정원") || "0"),
+      registered: parseInt(row.get("신청자") || "0")
     })).filter((e) => e.id && e.title);
     res.json({ events });
   } catch (error) {
-    res.status(500).json({ error: "\uC774\uBCA4\uD2B8 \uC870\uD68C \uC2E4\uD328" });
+    res.status(500).json({ error: "이벤트 조회 실패" });
   }
 });
 app.post("/api/crew-register", async (req, res) => {
   try {
     const googleSheet = await initializeGoogleSheet();
-    if (!googleSheet) return res.status(500).json({ error: "\uAD6C\uAE00 \uC2DC\uD2B8 \uC5F0\uACB0 \uC2E4\uD328" });
+    if (!googleSheet) return res.status(500).json({ error: "구글 시트 연결 실패" });
     const { name, email, phone, graduationYear, major, company, position, industry, motivation, referral } = req.body;
-    const crewSheet = googleSheet.sheetsByTitle["\uC2E0\uCCAD\uD604\uD669"] || googleSheet.sheetsByTitle["Crews"];
-    if (!crewSheet) return res.status(500).json({ error: "\uC2E0\uCCAD \uD0ED\uC744 \uCC3E\uC744 \uC218 \uC5C6\uC2B5\uB2C8\uB2E4" });
+    const crewSheet = googleSheet.sheetsByTitle["홈페이지_크루 등록"];
+    if (!crewSheet) return res.status(500).json({ error: "신청 탭을 찾을 수 없습니다" });
     await crewSheet.addRow({
-      "\uC774\uB984": name,
-      "\uC774\uBA54\uC77C": email,
-      "\uC5F0\uB77D\uCC98": phone,
-      "\uC878\uC5C5\uC5F0\uB3C4": graduationYear,
-      "\uC804\uACF5": major,
-      "\uD604\uC7AC\uC18C\uC18D": company,
-      "\uC9C1\uCC45": position,
-      "\uC5C5\uACC4": industry,
-      "\uD569\uB958\uB3D9\uAE30": motivation,
-      "\uCD94\uCC9C\uC778": referral,
-      "\uC2E0\uCCAD\uC77C\uC2DC": (/* @__PURE__ */ new Date()).toISOString(),
-      "\uC0C1\uD0DC": "\uAC80\uD1A0\uC911"
+      "이름": name,
+      "이메일": email,
+      "연락처": phone,
+      "졸업연도": graduationYear,
+      "전공": major,
+      "소속(회사/학교)": company,
+      "직책/역할": position,
+      "업계": industry,
+      "합류 동기": motivation,
+      "추천인": referral,
+      "신청일시": new Date().toLocaleString("ko-KR", { timeZone: "Asia/Seoul" }),
+      "상태": "검토중"
     });
     res.json({ success: true });
   } catch (error) {
-    res.status(500).json({ error: "\uD06C\uB8E8 \uB4F1\uB85D \uC2E4\uD328" });
+    res.status(500).json({ error: "크루 등록 실패" });
   }
 });
 var index_default = app;
