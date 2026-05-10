@@ -8,7 +8,7 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   X, ArrowRight, ArrowLeft, Check, Loader2, Search,
-  MessageCircle, Calendar, AlertCircle,
+  MessageCircle, Calendar, AlertCircle, HelpCircle,
 } from "lucide-react";
 
 interface EventInfo {
@@ -412,7 +412,7 @@ export default function EventRegisterModal({ isOpen, onClose, event }: Props) {
                   <Field label="회사 / 소속" required value={form.company} onChange={(v) => updateField("company", v)} prefilled={!isNew && !!form.company} />
                   <Field label="직급 / 직함" value={form.position} onChange={(v) => updateField("position", v)} prefilled={!isNew && !!form.position} />
                   <div className="sm:col-span-2"><MultiCheckboxField label="직군" required value={form.industry} options={INDUSTRIES} onChange={(v) => updateField("industry", v)} prefilled={!isNew && !!form.industry} /></div>
-                  <SelectField label="현재 궤도" value={form.orbit} options={ORBITS} onChange={(v) => updateField("orbit", v)} prefilled={!isNew && !!form.orbit} placeholder="선택해주세요" />
+                  <SelectField label="현재 궤도" value={form.orbit} options={ORBITS} onChange={(v) => updateField("orbit", v)} prefilled={!isNew && !!form.orbit} placeholder="선택해주세요" helpTooltip={<OrbitHelp />} />
                   <Field label="거주 지역" value={form.region} onChange={(v) => updateField("region", v)} prefilled={!isNew && !!form.region} placeholder="예) 서울 마포구" />
                 </div>
                 <Field label="자기소개 한 줄" value={form.introOneLiner} onChange={(v) => updateField("introOneLiner", v)} prefilled={!isNew && !!form.introOneLiner} placeholder="예) 사이드 프로젝트로 SaaS 만들고 있습니다" />
@@ -657,7 +657,8 @@ function Field({
   return (
     <div className="flex flex-col gap-1.5">
       <label className="text-ivory/50 text-xs tracking-[0.15em] uppercase flex items-center gap-2" style={{ fontFamily: "var(--font-body)" }}>
-        {label} {required && <span className="text-gold/60">*</span>}
+        {label}
+        {required ? <span className="text-gold/60">*</span> : <span className="text-ivory/30 text-[10px] normal-case tracking-normal">(선택)</span>}
         {prefilled && <span className="text-gold/50 text-[9px] normal-case tracking-normal">이전 정보</span>}
       </label>
       <input
@@ -677,17 +678,20 @@ function Field({
 }
 
 function SelectField({
-  label, value, options, onChange, required, prefilled = false, placeholder,
+  label, value, options, onChange, required, prefilled = false, placeholder, helpTooltip,
 }: {
   label: string; value: string; options: string[]; onChange: (v: string) => void;
   required?: boolean; prefilled?: boolean; placeholder?: string;
+  helpTooltip?: React.ReactNode;
 }) {
   const valueInOptions = options.includes(value);
   return (
     <div className="flex flex-col gap-1.5">
       <label className="text-ivory/50 text-xs tracking-[0.15em] uppercase flex items-center gap-2" style={{ fontFamily: "var(--font-body)" }}>
-        {label} {required && <span className="text-gold/60">*</span>}
+        {label}
+        {required ? <span className="text-gold/60">*</span> : <span className="text-ivory/30 text-[10px] normal-case tracking-normal">(선택)</span>}
         {prefilled && value && <span className="text-gold/50 text-[9px] normal-case tracking-normal">이전 정보</span>}
+        {helpTooltip}
       </label>
       <select
         value={value}
@@ -712,8 +716,9 @@ function TextareaField({
 }: { label: string; value: string; onChange: (v: string) => void; placeholder?: string }) {
   return (
     <div className="flex flex-col gap-1.5">
-      <label className="text-ivory/50 text-xs tracking-[0.15em] uppercase" style={{ fontFamily: "var(--font-body)" }}>
+      <label className="text-ivory/50 text-xs tracking-[0.15em] uppercase flex items-center gap-2" style={{ fontFamily: "var(--font-body)" }}>
         {label}
+        <span className="text-ivory/30 text-[10px] normal-case tracking-normal">(선택)</span>
       </label>
       <textarea
         value={value}
@@ -724,6 +729,27 @@ function TextareaField({
         style={{ fontFamily: "var(--font-body)" }}
       />
     </div>
+  );
+}
+
+function OrbitHelp() {
+  return (
+    <span className="relative inline-block group ml-auto">
+      <span className="text-ivory/35 hover:text-gold/70 transition-colors cursor-help inline-flex items-center" aria-label="궤도 설명">
+        <HelpCircle size={12} />
+      </span>
+      <div className="absolute z-30 right-0 top-full mt-2 w-72 p-3 bg-charcoal-deep border border-gold/30 shadow-2xl invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
+        <p className="text-gold/80 text-[11px] mb-2" style={{ fontFamily: "var(--font-body)", fontWeight: 500 }}>지금 본인은 어느 단계인가요?</p>
+        <ul className="space-y-1.5 text-ivory/65 text-[11px] leading-relaxed" style={{ fontFamily: "var(--font-body)", fontWeight: 300 }}>
+          <li><span className="text-gold/75">Ground Crew</span> — 재학생·취준생·서울 이주 준비</li>
+          <li><span className="text-gold/75">Launcher</span> — 사회 초년생, 첫 직장에서 배우는 단계</li>
+          <li><span className="text-gold/75">Rocket</span> — 30대 실무 리더, 팀 이끄는 단계</li>
+          <li><span className="text-gold/75">Orbiter</span> — 팀장~본부장급, 의사결정 단계</li>
+          <li><span className="text-gold/75">Galaxy</span> — C-level, 업계 인정 리더</li>
+          <li><span className="text-gold/75">Cosmos</span> — 명예 단계 (초대 기반)</li>
+        </ul>
+      </div>
+    </span>
   );
 }
 
