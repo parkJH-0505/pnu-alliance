@@ -9,7 +9,7 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import { ChevronDown, ArrowRight } from "lucide-react";
 import { useRef, useState, useEffect } from "react";
 
-const HERO_IMG = "/manus-storage/hero-space-background_81630d77.jpg";
+const HERO_IMG = "/images/hero-space-background.jpg";
 
 function useTypewriter(text: string, speed = 60, startDelay = 800) {
   const [displayed, setDisplayed] = useState("");

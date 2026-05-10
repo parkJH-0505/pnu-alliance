@@ -23,7 +23,7 @@ const tiers = [
     borderColor: "border-slate-blue/25",
     accentColor: "text-slate-blue",
     badgeColor: "bg-slate-blue/10 border-slate-blue/30 text-slate-blue/80",
-    backgroundImage: "/manus-storage/tier-ground-crew_32dc0dff.jpg",
+    backgroundImage: "/images/tier-ground-crew.jpg",
   },
   {
     id: "launcher",
@@ -38,7 +38,7 @@ const tiers = [
     borderColor: "border-gold/30",
     accentColor: "text-gold",
     badgeColor: "bg-gold/10 border-gold/30 text-gold/80",
-    backgroundImage: "/manus-storage/tier-launcher_b15ba89d.jpg",
+    backgroundImage: "/images/tier-launcher.jpg",
     featured: true,
   },
   {
@@ -54,7 +54,7 @@ const tiers = [
     borderColor: "border-burgundy/30",
     accentColor: "text-burgundy-light",
     badgeColor: "bg-burgundy/10 border-burgundy/30 text-burgundy-light/80",
-    backgroundImage: "/manus-storage/tier-rocket_664449f6.jpg",
+    backgroundImage: "/images/tier-rocket.jpg",
   },
   {
     id: "orbiter",
@@ -69,7 +69,7 @@ const tiers = [
     borderColor: "border-slate-blue/25",
     accentColor: "text-slate-blue",
     badgeColor: "bg-slate-blue/10 border-slate-blue/30 text-slate-blue/80",
-    backgroundImage: "/manus-storage/tier-orbiter_aeda270e.jpg",
+    backgroundImage: "/images/tier-orbiter.jpg",
   },
   {
     id: "galaxy",
@@ -84,7 +84,7 @@ const tiers = [
     borderColor: "border-gold/35",
     accentColor: "text-gold",
     badgeColor: "bg-gold/15 border-gold/35 text-gold/90",
-    backgroundImage: "/manus-storage/tier-galaxy_7d08e261.jpg",
+    backgroundImage: "/images/tier-galaxy.jpg",
   },
   {
     id: "cosmos",
@@ -99,7 +99,7 @@ const tiers = [
     borderColor: "border-gold/40",
     accentColor: "text-gold",
     badgeColor: "bg-gold/15 border-gold/40 text-gold",
-    backgroundImage: "/manus-storage/tier-cosmos_1fa6b99f.jpg",
+    backgroundImage: "/images/tier-cosmos.jpg",
     special: true,
   },
 ];
