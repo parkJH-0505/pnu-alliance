@@ -203,7 +203,7 @@ export async function addApplication(data: {
     data.motivation || '',
   ];
 
-  return await appendRow('Applications', row);
+  return await appendRow('신청현황', row);
 }
 
 /**
@@ -230,7 +230,7 @@ export async function addEvent(data: {
     now,
   ];
 
-  return await appendRow('Events', row);
+  return await appendRow('이벤트', row);
 }
 
 /**
@@ -255,7 +255,7 @@ export async function addEventRegistration(data: {
     data.registrationType === 'existing_member' ? '기존멤버' : '신규참가자',
   ];
 
-  return await appendRow('EventRegistrations', row);
+  return await appendRow('이벤트참가신청', row);
 }
 
 /**
@@ -280,7 +280,7 @@ export async function addMember(data: {
     now,
   ];
 
-  return await appendRow('Members', row);
+  return await appendRow('멤버리스트', row);
 }
 
 /**
@@ -305,7 +305,7 @@ export async function addNews(data: {
     data.publishedAt,
   ];
 
-  return await appendRow('News', row);
+  return await appendRow('뉴스', row);
 }
 
 /**
@@ -327,14 +327,14 @@ export async function addInquiry(data: {
     'pending',
   ];
 
-  return await appendRow('Inquiries', row);
+  return await appendRow('문의', row);
 }
 
 /**
  * 모든 이벤트 조회
  */
 export async function getAllEvents() {
-  const data = await getSheetData('Events', 'A2:H');
+  const data = await getSheetData('이벤트', 'A2:H');
   if (!data) return [];
 
   return data.map((row: any[]) => ({
@@ -353,7 +353,7 @@ export async function getAllEvents() {
  * 모든 멤버 조회
  */
 export async function getAllMembers() {
-  const data = await getSheetData('Members', 'A2:G');
+  const data = await getSheetData('멤버리스트', 'A2:G');
   if (!data) return [];
 
   return data.map((row: any[]) => ({
@@ -371,7 +371,7 @@ export async function getAllMembers() {
  * 모든 뉴스 조회
  */
 export async function getAllNews() {
-  const data = await getSheetData('News', 'A2:G');
+  const data = await getSheetData('뉴스', 'A2:G');
   if (!data) return [];
 
   return data.map((row: any[]) => ({
@@ -389,7 +389,7 @@ export async function getAllNews() {
  * 모든 합류 신청 조회
  */
 export async function getAllApplications() {
-  const data = await getSheetData('Applications', 'A2:J');
+  const data = await getSheetData('신청현황', 'A2:J');
   if (!data) return [];
 
   return data.map((row: any[]) => ({
@@ -412,7 +412,7 @@ export async function getAllApplications() {
 export async function initializeDatabase() {
   console.log('[GoogleSheetsDb] Initializing database structure...');
 
-  await initializeSheet('Applications', [
+  await initializeSheet('신청현황', [
     '신청일시',
     '이름',
     '이메일',
@@ -425,7 +425,7 @@ export async function initializeDatabase() {
     '동기',
   ]);
 
-  await initializeSheet('Events', [
+  await initializeSheet('이벤트', [
     '회차',
     '제목',
     '날짜',
@@ -436,7 +436,7 @@ export async function initializeDatabase() {
     '생성일시',
   ]);
 
-  await initializeSheet('EventRegistrations', [
+  await initializeSheet('이벤트참가신청', [
     '신청일시',
     '이벤트ID',
     '이름',
@@ -446,7 +446,7 @@ export async function initializeDatabase() {
     '신청자타입',
   ]);
 
-  await initializeSheet('Members', [
+  await initializeSheet('멤버리스트', [
     '이름',
     '직급',
     '회사',
@@ -456,7 +456,7 @@ export async function initializeDatabase() {
     '생성일시',
   ]);
 
-  await initializeSheet('News', [
+  await initializeSheet('뉴스', [
     '생성일시',
     '타입',
     '제목',
@@ -466,7 +466,7 @@ export async function initializeDatabase() {
     '발행일시',
   ]);
 
-  await initializeSheet('Inquiries', [
+  await initializeSheet('문의', [
     '생성일시',
     '이름',
     '이메일',
