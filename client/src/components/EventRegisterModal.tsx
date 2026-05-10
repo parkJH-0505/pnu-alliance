@@ -465,11 +465,19 @@ export default function EventRegisterModal({ isOpen, onClose, event }: Props) {
                     <label className="flex items-start gap-2 cursor-pointer">
                       <input type="checkbox" checked={form.hasCompanion} onChange={(e) => updateField("hasCompanion", e.target.checked)} className="mt-0.5 accent-gold" />
                       <span className="text-ivory/60 text-sm" style={{ fontFamily: "var(--font-body)", fontWeight: 300 }}>
-                        부산대 동문 1명 동반 참석합니다
+                        함께 모셔온 동문이 있습니다 <span className="text-gold/60 text-xs">(동반자 별도 신청 필요)</span>
                       </span>
                     </label>
                     {form.hasCompanion && (
-                      <Field label="동반자 이름·연락처" value={form.companionInfo} onChange={(v) => updateField("companionInfo", v)} placeholder="예) 김동문 / 010-1234-5678" />
+                      <div className="space-y-3 p-3 bg-gold/5 border border-gold/25">
+                        <p className="text-ivory/70 text-xs leading-relaxed" style={{ fontFamily: "var(--font-body)", fontWeight: 300 }}>
+                          <span className="text-gold/90">⚠ 동반자분도 이 폼을 별도로 작성해주셔야 합니다.</span>
+                          {" "}홈페이지 링크를 동문분께 전달해서 동일하게 신청해달라고 부탁드려요.
+                          동반자가 신청할 때 <span className="text-gold/80">'초대해주신 분'</span> 칸에 회원님 이름을 적으면 자동으로 매칭됩니다.
+                        </p>
+                        <CopyLinkButton url="https://pnu-alliance.vercel.app/" />
+                        <Field label="동반자 이름 (참고용)" value={form.companionInfo} onChange={(v) => updateField("companionInfo", v)} placeholder="예) 김동문" />
+                      </div>
                     )}
                     <TextareaField label="이번 자리에 기대하는 점" value={form.expectations} onChange={(v) => updateField("expectations", v)} placeholder="(선택)" />
                     <TextareaField label="의견·질문" value={form.comment} onChange={(v) => updateField("comment", v)} placeholder="(선택)" />
@@ -716,6 +724,26 @@ function TextareaField({
         style={{ fontFamily: "var(--font-body)" }}
       />
     </div>
+  );
+}
+
+function CopyLinkButton({ url }: { url: string }) {
+  const [copied, setCopied] = useState(false);
+  const onCopy = () => {
+    navigator.clipboard?.writeText(url).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500);
+    }).catch(() => {});
+  };
+  return (
+    <button
+      type="button"
+      onClick={onCopy}
+      className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-gold/15 border border-gold/30 text-gold/90 text-[11px] hover:bg-gold/25 transition-colors"
+      style={{ fontFamily: "var(--font-body)" }}
+    >
+      {copied ? "✓ 복사됨" : "🔗 홈페이지 링크 복사"}
+    </button>
   );
 }
 
