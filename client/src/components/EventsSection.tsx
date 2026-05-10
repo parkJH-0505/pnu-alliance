@@ -22,9 +22,11 @@ interface Event {
   type?: "upcoming" | "past";
   label?: string;
   subtitle?: string;
+  theme?: string;
   tags?: string[];
   featured?: boolean;
   registerUrl?: string;
+  coverImage?: string;
 }
 
 const FALLBACK_EVENTS: Event[] = [
@@ -32,23 +34,25 @@ const FALLBACK_EVENTS: Event[] = [
     id: "4",
     title: "4th Meetup — The Bridge",
     subtitle: "추천으로 잇는 부산대 동문 네트워크",
+    theme: "The Bridge",
     date: "2026-05-29",
     time: "19:30",
     location: "강남 일대 (확정 시 안내)",
     capacity: 40,
     registered: 0,
     description:
-      "기존 멤버가 신뢰하는 사람을 1명 데려오는 회차. Phase 1 학번 중심 딥톡에서 시작해 Phase 2 직무 중심 스탠딩 파티로 전환됩니다. 동반 참석 두 분께는 다음 날 애프터 커피챗 지원금이 전달됩니다.",
+      "기존 멤버가 신뢰하는 사람을 1명 데려오는 회차. Phase 1 학번 중심 딥톡에서 시작해 Phase 2 직무 중심 스탠딩 파티로 전환됩니다.",
     type: "upcoming",
     label: "Upcoming",
     featured: true,
     tags: ["The Bridge", "추천 기반", "참가비 5만"],
-    registerUrl: "#join",
+    coverImage: "",
   },
   {
     id: "3",
     title: "3rd Meetup — Rendezvous",
     subtitle: "두 궤도가 처음 도킹한 밤",
+    theme: "Rendezvous",
     date: "2026-03-20",
     time: "19:30",
     location: "서울 잠원동",
@@ -58,11 +62,13 @@ const FALLBACK_EVENTS: Event[] = [
       "1·2회차 멤버가 처음 한 자리에 모인 통합 라운드. 31명, 학번 07~21 전 세대가 한 자리에. 주니어와 시니어가 처음으로 같은 좌표에 모인 변곡점.",
     type: "past",
     tags: ["Rendezvous", "통합", "31명"],
+    coverImage: "",
   },
   {
     id: "2",
     title: "2nd Meetup — Rocket",
     subtitle: "30대 시니어들의 본격 추진",
+    theme: "Rocket",
     date: "2026-01-29",
     time: "19:30",
     location: "서울 강남",
@@ -72,11 +78,13 @@ const FALLBACK_EVENTS: Event[] = [
       "30대 초중반 시니어 19명. AWS, 우아한형제들, 데이터브릭스, 토스증권, 삼일회계법인, 법무법인 등 다양한 분야. 행사 후 한 참석자의 자발적 링크드인 후기에 100+ 반응.",
     type: "past",
     tags: ["Rocket", "시니어", "19명"],
+    coverImage: "",
   },
   {
     id: "1",
     title: "1st Meetup — Launcher",
     subtitle: "첫 점화, 19명이 모인 밤",
+    theme: "Launcher",
     date: "2025-11-26",
     time: "19:30",
     location: "서울 강남",
@@ -86,6 +94,7 @@ const FALLBACK_EVENTS: Event[] = [
       "PNU Alliance의 첫 라운드. 20대 중후반 주니어 19명. 핑거푸드와 맥주, 자기소개 라운드 → 자유 네트워킹. '처음인데 어색하지 않다'는 후기가 많았던 밤.",
     type: "past",
     tags: ["Launcher", "주니어", "19명"],
+    coverImage: "",
   },
 ];
 
@@ -121,16 +130,26 @@ function EventCard({ event, index, onRegisterClick }: { event: Event; index: num
       initial={{ opacity: 0, y: 30 }}
       animate={isInView ? { opacity: 1, y: 0 } : {}}
       transition={{ duration: 0.7, delay: index * 0.1, ease: [0.22, 1, 0.36, 1] }}
-      className={`relative border ${
+      className={`relative border overflow-hidden ${
         event.featured
           ? "border-gold/30 bg-gradient-to-b from-gold/5 to-charcoal"
           : "border-gold/10 bg-charcoal"
       } group ${isPast ? "opacity-60" : ""}`}
     >
-      {event.featured && (
-        <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-gold/60 to-transparent" />
+      {/* 배경 이미지 레이어 (시트의 coverImage 있을 때) */}
+      {event.coverImage && (
+        <>
+          <div
+            className="absolute inset-0 bg-cover bg-center opacity-12 group-hover:opacity-20 transition-opacity duration-500 pointer-events-none"
+            style={{ backgroundImage: `url(${event.coverImage})` }}
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-charcoal/70 via-charcoal/85 to-charcoal pointer-events-none" />
+        </>
       )}
-      <div className="p-6 lg:p-7">
+      {event.featured && (
+        <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-gold/60 to-transparent z-10" />
+      )}
+      <div className="relative z-10 p-6 lg:p-7">
         <div className="flex items-center justify-between mb-4">
           <span className="tag-gold">{event.label || (isPast ? "Past Event" : "Upcoming")}</span>
           {!isPast && event.featured && (
@@ -207,14 +226,27 @@ function EventCard({ event, index, onRegisterClick }: { event: Event; index: num
           </div>
         )}
         {!isPast && event.featured && (
-          <button
-            onClick={() => onRegisterClick?.(event)}
-            className="inline-flex items-center gap-2 px-5 py-3 bg-gold text-charcoal-deep text-sm tracking-[0.1em] uppercase hover:bg-gold-light transition-all duration-300"
-            style={{ fontFamily: "var(--font-body)", fontWeight: 500 }}
-          >
-            신청하기
-            <ArrowRight size={14} />
-          </button>
+          event.registerUrl ? (
+            <a
+              href={event.registerUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 px-5 py-3 bg-gold text-charcoal-deep text-sm tracking-[0.1em] uppercase hover:bg-gold-light transition-all duration-300"
+              style={{ fontFamily: "var(--font-body)", fontWeight: 500 }}
+            >
+              신청하기
+              <ArrowRight size={14} />
+            </a>
+          ) : (
+            <button
+              onClick={() => onRegisterClick?.(event)}
+              className="inline-flex items-center gap-2 px-5 py-3 bg-gold text-charcoal-deep text-sm tracking-[0.1em] uppercase hover:bg-gold-light transition-all duration-300"
+              style={{ fontFamily: "var(--font-body)", fontWeight: 500 }}
+            >
+              신청하기
+              <ArrowRight size={14} />
+            </button>
+          )
         )}
       </div>
     </motion.div>
@@ -238,23 +270,36 @@ export default function EventsSection() {
         const data = await response.json();
 
         if (data.events && Array.isArray(data.events) && data.events.length > 0) {
-          // 가장 가까운 upcoming 1개만 featured
-          const sortedUpcoming = [...data.events]
-            .filter((e: any) => new Date(e.date) >= new Date())
+          // 시트 status 우선, 없으면 날짜 비교로 type 결정
+          const upcoming = data.events
+            .filter((e: any) => (e.status || "").toLowerCase() === "upcoming" || (!e.status && new Date(e.date) >= new Date()))
             .sort((a: any, b: any) => new Date(a.date).getTime() - new Date(b.date).getTime());
-          const firstUpcomingId = sortedUpcoming[0]?.id;
+          const firstUpcomingId = upcoming[0]?.id;
 
           const normalizedEvents = data.events.map((event: any) => {
             const eventDate = new Date(event.date);
-            const isPast = eventDate < new Date();
+            const isPast = (event.status || "").toLowerCase() === "past" ||
+              ((event.status || "") === "" && eventDate < new Date());
+            // tags: comma-separated string 또는 배열 모두 지원
+            let tags: string[] = [];
+            if (Array.isArray(event.tags)) tags = event.tags;
+            else if (typeof event.tags === "string" && event.tags.trim()) {
+              tags = event.tags.split(",").map((s: string) => s.trim()).filter(Boolean);
+            } else if (event.theme) {
+              tags = [event.theme];
+            }
+            // featured: 시트 "Y" 우선, 없으면 가장 가까운 upcoming
+            const featuredFromSheet = (event.featured || "").toString().toLowerCase() === "y" || event.featured === true;
+            const featured = !isPast && (featuredFromSheet || event.id === firstUpcomingId);
             return {
               ...event,
               id: event.id || event.title,
               type: isPast ? "past" : "upcoming",
               label: isPast ? "Past Event" : "Upcoming",
               subtitle: event.subtitle || `${event.date} · ${event.location}`,
-              tags: event.tags || ["행사"],
-              featured: !isPast && event.id === firstUpcomingId,
+              tags: tags.length > 0 ? tags : ["행사"],
+              featured,
+              coverImage: event.coverImage || "",
             };
           });
           setEvents(normalizedEvents);
