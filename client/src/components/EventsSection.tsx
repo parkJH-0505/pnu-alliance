@@ -253,12 +253,74 @@ function EventCard({ event, index, onRegisterClick }: { event: Event; index: num
   );
 }
 
+// 나선형 좌표 — 4개 카드 기준 (밖 → 안 시계방향)
+const SPIRAL_POSITIONS = [
+  { left: "40%", top: "2%", scale: 0.82, rotate: -3 },   // i=0 가장 최근, 가장 큼
+  { left: "5%", top: "28%", scale: 0.62, rotate: 6 },    // i=1
+  { left: "45%", top: "52%", scale: 0.48, rotate: -10 }, // i=2
+  { left: "18%", top: "72%", scale: 0.36, rotate: 14 },  // i=3 가장 옛, 가장 안쪽
+];
+
+function SpiralCard({
+  event, position, index,
+}: { event: Event; position: typeof SPIRAL_POSITIONS[number]; index: number }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, scale: 0 }}
+      animate={{ opacity: 1, scale: position.scale, rotate: position.rotate }}
+      transition={{ duration: 0.8, delay: index * 0.15, ease: [0.22, 1, 0.36, 1] }}
+      whileHover={{ scale: 1, rotate: 0, zIndex: 30, transition: { duration: 0.3 } }}
+      style={{
+        position: "absolute",
+        left: position.left,
+        top: position.top,
+        zIndex: 20 - index,
+        transformOrigin: "center",
+      }}
+      className="w-56 cursor-default"
+    >
+      <div className="relative border border-gold/25 bg-charcoal hover:border-gold/55 transition-colors p-4 shadow-2xl overflow-hidden">
+        {event.coverImage && (
+          <>
+            <div
+              className="absolute inset-0 bg-cover bg-center opacity-15 pointer-events-none"
+              style={{ backgroundImage: `url(${event.coverImage})` }}
+            />
+            <div className="absolute inset-0 bg-gradient-to-b from-charcoal/70 to-charcoal pointer-events-none" />
+          </>
+        )}
+        <div className="relative z-10">
+          <div className="flex items-center justify-between mb-2 gap-2">
+            <span className="text-gold/75 text-[10px] tracking-[0.18em] uppercase whitespace-nowrap" style={{ fontFamily: "var(--font-body)" }}>
+              {event.id}회차{event.theme ? ` · ${event.theme}` : ""}
+            </span>
+            <span className="text-ivory/35 text-[10px] whitespace-nowrap" style={{ fontFamily: "var(--font-body)" }}>
+              {event.date}
+            </span>
+          </div>
+          <h4 className="text-ivory text-base mb-1.5 leading-tight" style={{ fontFamily: "var(--font-display)", fontWeight: 400 }}>
+            {event.title.replace(/^\d+\w+ Meetup\s*[—\-]\s*/, "")}
+          </h4>
+          {event.subtitle && (
+            <p className="text-ivory/55 text-xs leading-relaxed mb-2" style={{ fontFamily: "var(--font-body)", fontWeight: 300 }}>
+              {event.subtitle}
+            </p>
+          )}
+          <div className="text-ivory/45 text-[11px] flex items-center gap-3 mt-2" style={{ fontFamily: "var(--font-body)" }}>
+            <span className="inline-flex items-center gap-1"><Users size={10} className="text-gold/50" />{event.registered}/{event.capacity}</span>
+            <span className="inline-flex items-center gap-1 truncate"><MapPin size={10} className="text-gold/50" />{event.location.split(" ")[0]}</span>
+          </div>
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
 export default function EventsSection() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
   const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState<"all" | "upcoming" | "past">("all");
   const [modalEvent, setModalEvent] = useState<Event | null>(null);
 
   // 구글 시트에서 이벤트 로드
@@ -319,15 +381,13 @@ export default function EventsSection() {
     fetchEvents();
   }, []);
 
-  // 필터링된 이벤트
-  const filteredEvents = events.filter((event) => {
-    if (filter === "upcoming") return event.type === "upcoming";
-    if (filter === "past") return event.type === "past";
-    return true;
-  });
-
-  const upcomingCount = events.filter((e) => e.type === "upcoming").length;
-  const pastCount = events.filter((e) => e.type === "past").length;
+  // featured: 모집중 1개 (큰 카드)
+  const featured = events.find((e) => e.featured && e.type !== "past") || events.find((e) => e.type !== "past");
+  // 지난 회차: 최근 4개 (나선형)
+  const pastEvents = events
+    .filter((e) => e.type === "past")
+    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+    .slice(0, 4);
 
   return (
     <section id="events" className="relative py-28 lg:py-40 overflow-hidden bg-charcoal">
@@ -349,28 +409,6 @@ export default function EventsSection() {
           </p>
         </motion.div>
 
-        {/* 필터 탭 */}
-        <div className="flex gap-3 mb-12">
-          {[
-            { key: "all", label: "전체", count: events.length },
-            { key: "upcoming", label: "예정", count: upcomingCount },
-            { key: "past", label: "지난 행사", count: pastCount },
-          ].map((tab) => (
-            <button
-              key={tab.key}
-              onClick={() => setFilter(tab.key as any)}
-              className={`px-4 py-2 text-sm tracking-[0.1em] transition-all duration-300 ${
-                filter === tab.key
-                  ? "bg-gold text-charcoal-deep"
-                  : "border border-gold/20 text-ivory/60 hover:border-gold/40"
-              }`}
-              style={{ fontFamily: "var(--font-body)", fontWeight: 500 }}
-            >
-              {tab.label} ({tab.count})
-            </button>
-          ))}
-        </div>
-
         {/* 로딩 상태 */}
         {loading && (
           <div className="flex items-center justify-center py-20">
@@ -379,22 +417,67 @@ export default function EventsSection() {
           </div>
         )}
 
-        {/* 이벤트 목록 */}
-        {!loading && filteredEvents.length > 0 && (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {filteredEvents.map((event, index) => (
-              <EventCard key={event.id} event={event} index={index} onRegisterClick={setModalEvent} />
-            ))}
-          </div>
+        {/* Desktop: featured 좌측 + 나선형 우측 */}
+        {!loading && events.length > 0 && (
+          <>
+            <div className="hidden md:grid md:grid-cols-2 gap-8 lg:gap-12">
+              {/* 좌측: 모집중 큰 카드 */}
+              <div className="relative">
+                {featured ? (
+                  <EventCard event={featured} index={0} onRegisterClick={setModalEvent} />
+                ) : (
+                  <div className="border border-gold/15 bg-charcoal p-8 min-h-[420px] flex flex-col items-center justify-center text-center">
+                    <p className="text-gold/60 text-xs tracking-[0.3em] uppercase mb-3" style={{ fontFamily: "var(--font-body)" }}>Coming Soon</p>
+                    <p className="text-ivory/60 text-base mb-1" style={{ fontFamily: "var(--font-display)" }}>다음 회차 준비 중</p>
+                    <p className="text-ivory/35 text-sm" style={{ fontFamily: "var(--font-body)", fontWeight: 300 }}>곧 공개됩니다</p>
+                  </div>
+                )}
+              </div>
+
+              {/* 우측: 나선형 지난 회차들 */}
+              <div className="relative min-h-[600px]" style={{ overflow: "visible" }}>
+                {pastEvents.length > 0 ? (
+                  <>
+                    {pastEvents.map((event, i) => (
+                      <SpiralCard
+                        key={event.id}
+                        event={event}
+                        position={SPIRAL_POSITIONS[Math.min(i, SPIRAL_POSITIONS.length - 1)]}
+                        index={i}
+                      />
+                    ))}
+                    {pastEvents.length >= 4 && (
+                      <button
+                        onClick={() => alert("전체 회차 페이지는 곧 공개됩니다")}
+                        className="absolute bottom-0 right-0 text-ivory/40 hover:text-gold text-xs tracking-[0.15em] uppercase transition-colors"
+                        style={{ fontFamily: "var(--font-body)", fontWeight: 400 }}
+                      >
+                        전체 보기 →
+                      </button>
+                    )}
+                  </>
+                ) : (
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <p className="text-ivory/30 text-sm" style={{ fontFamily: "var(--font-body)", fontWeight: 300 }}>지난 회차가 아직 없습니다</p>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Mobile: 단일 컬럼 grid */}
+            <div className="md:hidden grid grid-cols-1 gap-6">
+              {events.map((event, i) => (
+                <EventCard key={event.id} event={event} index={i} onRegisterClick={setModalEvent} />
+              ))}
+            </div>
+          </>
         )}
 
         {/* 이벤트 없음 */}
-        {!loading && filteredEvents.length === 0 && (
+        {!loading && events.length === 0 && (
           <div className="text-center py-20">
             <p className="text-ivory/40 text-lg" style={{ fontFamily: "var(--font-body)", fontWeight: 300 }}>
-              {filter === "upcoming" && "현재 모집 중인 행사가 없습니다."}
-              {filter === "past" && "지난 행사가 없습니다."}
-              {filter === "all" && "행사 정보가 없습니다."}
+              행사 정보가 없습니다.
             </p>
             <p className="text-ivory/20 text-sm mt-2">곧 새로운 행사가 준비될 예정입니다.</p>
           </div>
