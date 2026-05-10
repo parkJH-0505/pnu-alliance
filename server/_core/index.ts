@@ -8,7 +8,6 @@ import { registerStorageProxy } from "./storageProxy";
 import { appRouter } from "../routers";
 import { createContext } from "./context";
 import { serveStatic, setupVite } from "./vite";
-import { initializeGoogleSheetsOnStartup } from "./initGoogleSheets";
 
 function isPortAvailable(port: number): Promise<boolean> {
   return new Promise(resolve => {
@@ -30,9 +29,6 @@ async function findAvailablePort(startPort: number = 3000): Promise<number> {
 }
 
 async function startServer() {
-  // Initialize Google Sheets on startup
-  await initializeGoogleSheetsOnStartup();
-  
   const app = express();
   const server = createServer(app);
   // Configure body parser with larger size limit for file uploads
