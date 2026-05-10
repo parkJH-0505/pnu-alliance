@@ -479,8 +479,8 @@ export default function EventRegisterModal({ isOpen, onClose, event }: Props) {
                         <Field label="동반자 이름 (참고용)" value={form.companionInfo} onChange={(v) => updateField("companionInfo", v)} placeholder="예) 김동문" />
                       </div>
                     )}
-                    <TextareaField label="이번 자리에 기대하는 점" value={form.expectations} onChange={(v) => updateField("expectations", v)} placeholder="(선택)" />
-                    <TextareaField label="의견·질문" value={form.comment} onChange={(v) => updateField("comment", v)} placeholder="(선택)" />
+                    <TextareaField label="이번 자리에 기대하는 점" value={form.expectations} onChange={(v) => updateField("expectations", v)} placeholder="만나고 싶은 분, 알고 싶은 것, 듣고 싶은 이야기..." />
+                    <TextareaField label="의견·질문" value={form.comment} onChange={(v) => updateField("comment", v)} placeholder="궁금한 점이나 건의. 정 할 말 없으시면 호스트에게 응원 한 발 🚀 던져주세요" />
                   </div>
                 </div>
 
