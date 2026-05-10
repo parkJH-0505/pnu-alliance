@@ -4,18 +4,13 @@
   "env": {
     "NODE_ENV": "production"
   },
-  "functions": {
-    "server/_core/index.ts": {
-      "runtime": "nodejs20.x"
-    }
-  },
   "rewrites": [
     {
       "source": "/api/trpc/:path*",
-      "destination": "/api/index.js"
+      "destination": "/index.html"
     },
     {
-      "source": "/:path*",
+      "source": "/:path((?!api|assets).*)",
       "destination": "/index.html"
     }
   ]
