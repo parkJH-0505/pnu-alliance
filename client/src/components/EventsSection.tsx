@@ -255,10 +255,10 @@ function EventCard({ event, index, onRegisterClick }: { event: Event; index: num
 
 // 나선형 좌표 — 4개 카드 기준 (밖 → 안 시계방향)
 const SPIRAL_POSITIONS = [
-  { left: "20%", top: "0%", scale: 1.0, rotate: -3 },    // i=0 가장 최근, 가장 큼
-  { left: "-3%", top: "32%", scale: 0.85, rotate: 6 },   // i=1
-  { left: "25%", top: "62%", scale: 0.68, rotate: -10 }, // i=2 가장 옛 (현재 노출 끝)
-  { left: "5%", top: "88%", scale: 0.52, rotate: 14 },   // i=3 (5차+ 시점용)
+  { left: "10%", top: "0%", scale: 1.0, rotate: -3 },    // i=0 가장 최근, 가장 큼
+  { left: "-8%", top: "30%", scale: 0.82, rotate: 7 },   // i=1
+  { left: "20%", top: "58%", scale: 0.66, rotate: -11 }, // i=2 가장 옛 (현재 노출 끝)
+  { left: "0%", top: "85%", scale: 0.52, rotate: 14 },   // i=3 (5차+ 시점용)
 ];
 
 function SpiralCard({
@@ -277,38 +277,42 @@ function SpiralCard({
         zIndex: 20 - index,
         transformOrigin: "center",
       }}
-      className="w-72 cursor-default"
+      className="w-80 lg:w-96 cursor-default"
     >
-      <div className="relative border border-gold/25 bg-charcoal hover:border-gold/55 transition-colors p-4 shadow-2xl overflow-hidden">
-        {event.coverImage && (
+      <div className="relative aspect-video border border-gold/25 bg-charcoal hover:border-gold/55 transition-colors shadow-2xl overflow-hidden">
+        {event.coverImage ? (
           <>
             <div
-              className="absolute inset-0 bg-cover bg-center opacity-15 pointer-events-none"
+              className="absolute inset-0 bg-cover bg-center pointer-events-none"
               style={{ backgroundImage: `url(${event.coverImage})` }}
             />
-            <div className="absolute inset-0 bg-gradient-to-b from-charcoal/70 to-charcoal pointer-events-none" />
+            <div className="absolute inset-0 bg-gradient-to-t from-charcoal via-charcoal/75 to-charcoal/40 pointer-events-none" />
           </>
+        ) : (
+          <div className="absolute inset-0 bg-gradient-to-br from-gold/5 via-charcoal to-burgundy/5 pointer-events-none" />
         )}
-        <div className="relative z-10">
-          <div className="flex items-center justify-between mb-2 gap-2">
-            <span className="text-gold/75 text-[10px] tracking-[0.18em] uppercase whitespace-nowrap" style={{ fontFamily: "var(--font-body)" }}>
+        <div className="absolute inset-0 p-5 flex flex-col justify-between z-10">
+          <div className="flex items-center justify-between gap-2">
+            <span className="text-gold/85 text-[11px] tracking-[0.18em] uppercase whitespace-nowrap" style={{ fontFamily: "var(--font-body)" }}>
               {event.id}회차{event.theme ? ` · ${event.theme}` : ""}
             </span>
-            <span className="text-ivory/35 text-[10px] whitespace-nowrap" style={{ fontFamily: "var(--font-body)" }}>
+            <span className="text-ivory/45 text-[10px] whitespace-nowrap" style={{ fontFamily: "var(--font-body)" }}>
               {event.date}
             </span>
           </div>
-          <h4 className="text-ivory text-base mb-1.5 leading-tight" style={{ fontFamily: "var(--font-display)", fontWeight: 400 }}>
-            {event.title.replace(/^\d+\w+ Meetup\s*[—\-]\s*/, "")}
-          </h4>
-          {event.subtitle && (
-            <p className="text-ivory/55 text-xs leading-relaxed mb-2" style={{ fontFamily: "var(--font-body)", fontWeight: 300 }}>
-              {event.subtitle}
-            </p>
-          )}
-          <div className="text-ivory/45 text-[11px] flex items-center gap-3 mt-2" style={{ fontFamily: "var(--font-body)" }}>
-            <span className="inline-flex items-center gap-1"><Users size={10} className="text-gold/50" />{event.registered}/{event.capacity}</span>
-            <span className="inline-flex items-center gap-1 truncate"><MapPin size={10} className="text-gold/50" />{event.location.split(" ")[0]}</span>
+          <div>
+            <h4 className="text-ivory text-lg lg:text-xl mb-1 leading-tight" style={{ fontFamily: "var(--font-display)", fontWeight: 400 }}>
+              {event.title.replace(/^\d+\w+ Meetup\s*[—\-]\s*/, "")}
+            </h4>
+            {event.subtitle && (
+              <p className="text-ivory/70 text-xs lg:text-sm leading-relaxed mb-2" style={{ fontFamily: "var(--font-body)", fontWeight: 300 }}>
+                {event.subtitle}
+              </p>
+            )}
+            <div className="text-ivory/55 text-[11px] flex items-center gap-3" style={{ fontFamily: "var(--font-body)" }}>
+              <span className="inline-flex items-center gap-1"><Users size={11} className="text-gold/60" />{event.registered}/{event.capacity}</span>
+              <span className="inline-flex items-center gap-1 truncate"><MapPin size={11} className="text-gold/60" />{event.location.split(" ")[0]}</span>
+            </div>
           </div>
         </div>
       </div>
@@ -435,7 +439,7 @@ export default function EventsSection() {
               </div>
 
               {/* 우측: 나선형 지난 회차들 */}
-              <div className="relative min-h-[600px]" style={{ overflow: "visible" }}>
+              <div className="relative min-h-[700px] lg:min-h-[780px]" style={{ overflow: "visible" }}>
                 {pastEvents.length > 0 ? (
                   <>
                     {pastEvents.map((event, i) => (
