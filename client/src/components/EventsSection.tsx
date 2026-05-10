@@ -8,6 +8,7 @@
 import { motion, useInView } from "framer-motion";
 import { useRef, useState, useEffect } from "react";
 import { Calendar, MapPin, Users, ArrowRight, Loader2 } from "lucide-react";
+import EventRegisterModal from "./EventRegisterModal";
 
 interface Event {
   id: string;
@@ -107,7 +108,7 @@ function useCountdown(targetDate: string) {
   return timeLeft;
 }
 
-function EventCard({ event, index }: { event: Event; index: number }) {
+function EventCard({ event, index, onRegisterClick }: { event: Event; index: number; onRegisterClick?: (e: Event) => void }) {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-60px" });
   const countdown = useCountdown(event.date + "T" + event.time);
@@ -205,15 +206,15 @@ function EventCard({ event, index }: { event: Event; index: number }) {
             ))}
           </div>
         )}
-        {!isPast && event.featured && event.registerUrl && (
-          <a
-            href={event.registerUrl}
+        {!isPast && event.featured && (
+          <button
+            onClick={() => onRegisterClick?.(event)}
             className="inline-flex items-center gap-2 px-5 py-3 bg-gold text-charcoal-deep text-sm tracking-[0.1em] uppercase hover:bg-gold-light transition-all duration-300"
             style={{ fontFamily: "var(--font-body)", fontWeight: 500 }}
           >
             신청하기
             <ArrowRight size={14} />
-          </a>
+          </button>
         )}
       </div>
     </motion.div>
@@ -226,6 +227,7 @@ export default function EventsSection() {
   const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<"all" | "upcoming" | "past">("all");
+  const [modalEvent, setModalEvent] = useState<Event | null>(null);
 
   // 구글 시트에서 이벤트 로드
   useEffect(() => {
@@ -336,7 +338,7 @@ export default function EventsSection() {
         {!loading && filteredEvents.length > 0 && (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {filteredEvents.map((event, index) => (
-              <EventCard key={event.id} event={event} index={index} />
+              <EventCard key={event.id} event={event} index={index} onRegisterClick={setModalEvent} />
             ))}
           </div>
         )}
@@ -353,6 +355,23 @@ export default function EventsSection() {
           </div>
         )}
       </div>
+
+      {/* 회차 참가 신청 모달 */}
+      {modalEvent && (
+        <EventRegisterModal
+          isOpen={!!modalEvent}
+          onClose={() => setModalEvent(null)}
+          event={{
+            id: modalEvent.id,
+            title: modalEvent.title,
+            date: modalEvent.date,
+            time: modalEvent.time,
+            location: modalEvent.location,
+            capacity: modalEvent.capacity,
+            description: modalEvent.description,
+          }}
+        />
+      )}
     </section>
   );
 }
