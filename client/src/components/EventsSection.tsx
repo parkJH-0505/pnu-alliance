@@ -255,10 +255,10 @@ function EventCard({ event, index, onRegisterClick }: { event: Event; index: num
 
 // 나선형 좌표 — 4개 카드 기준 (밖 → 안 시계방향)
 const SPIRAL_POSITIONS = [
-  { left: "10%", top: "0%", scale: 1.0, rotate: -3 },    // i=0 가장 최근, 가장 큼
-  { left: "-8%", top: "30%", scale: 0.82, rotate: 7 },   // i=1
-  { left: "20%", top: "58%", scale: 0.66, rotate: -11 }, // i=2 가장 옛 (현재 노출 끝)
-  { left: "0%", top: "85%", scale: 0.52, rotate: 14 },   // i=3 (5차+ 시점용)
+  { left: "10%", top: "0%", scale: 1.0, rotate: -3 },    // i=0 가장 최근, 가장 큼 (z-20)
+  { left: "-8%", top: "22%", scale: 0.82, rotate: 7 },   // i=1 (z-19, 살짝 겹침)
+  { left: "18%", top: "42%", scale: 0.66, rotate: -11 }, // i=2 (z-18, 겹침)
+  { left: "5%", top: "62%", scale: 0.52, rotate: 14 },   // i=3 (5차+ 시점용)
 ];
 
 function SpiralCard({
