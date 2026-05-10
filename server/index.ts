@@ -5,24 +5,7 @@ import { JWT } from "google-auth-library";
 // Google Sheets 설정
 const SHEET_ID = "1xa7YDW1kjvVr-oLwWZETjwhNAxJVFuXF1uXWLZoSXnk";
 
-// 검색·prefill 응답 화이트리스트 — PII(전화·이메일·메모·코어후보·유입경로·레퍼럴·참석기록·LinkedIn·성별)는 절대 노출되지 않음
-const MEMBER_PUBLIC_FIELDS = [
-  "member_id",
-  "이름",
-  "학번",
-  "전공",
-  "회사",
-  "직급",
-  "직군",
-  "현재궤도",
-  "거주지역",
-  "자기소개_한줄",
-];
-
-function normalizeName(s: string): string {
-  return (s || "").trim().replace(/\s+/g, "");
-}
-
+// 구글 서비스 계정 인증 정보
 const getGoogleAuth = () => {
   const serviceAccountJson = process.env.GOOGLE_SERVICE_ACCOUNT_JSON;
   if (!serviceAccountJson) return null;
@@ -33,6 +16,7 @@ const getGoogleAuth = () => {
   }
 };
 
+// 구글 시트 문서 초기화
 async function initializeGoogleSheet() {
   const serviceAccount = getGoogleAuth();
   if (!serviceAccount) return null;
@@ -49,16 +33,59 @@ async function initializeGoogleSheet() {
   }
 }
 
+// 한글/공백 정규화
+function normalizeName(name: string): string {
+  return (name || "").trim().replace(/\s+/g, "");
+}
+
+// 카드 응답 화이트리스트 — PII는 절대 미포함
+function memberToPublic(row: any) {
+  return {
+    member_id: row.get("member_id") || "",
+    name: row.get("이름") || "",
+    graduationYear: row.get("학번") || "",
+    major: row.get("전공") || "",
+    company: row.get("회사") || "",
+    position: row.get("직급") || "",
+    industry: row.get("직군") || "",
+    orbit: row.get("현재궤도") || "",
+    introOneLiner: row.get("자기소개_한줄") || "",
+    region: row.get("거주지역") || "",
+    linkedinUrl: row.get("링크드인URL") || "",
+  };
+}
+
+// EventRegistrations 시트 헤더 lazy init
+const EVENT_REG_HEADERS = [
+  "registration_id", "신청일시", "event_id", "member_id", "이름",
+  "전화번호", "이메일", "인스타ID", "초대자_member_id", "초대자_텍스트",
+  "동반참석여부", "동반자정보", "기대점", "의견", "상태", "입금여부",
+];
+
+async function ensureEventRegHeader(sheet: any) {
+  try {
+    await sheet.loadHeaderRow();
+    if (!sheet.headerValues || sheet.headerValues.length === 0) {
+      await sheet.setHeaderRow(EVENT_REG_HEADERS);
+    }
+  } catch (e) {
+    // 헤더 행 자체가 없는 경우
+    await sheet.setHeaderRow(EVENT_REG_HEADERS);
+  }
+}
+
 const app = express();
 app.use(express.json());
 
-// 1. 이벤트 조회
-app.get("/api/events", async (_req, res) => {
+// =============================================================================
+// 1. Events 조회 (기존)
+// =============================================================================
+app.get("/api/events", async (req, res) => {
   try {
-    const doc = await initializeGoogleSheet();
-    if (!doc) return res.status(500).json({ error: "구글 시트 연결 실패" });
+    const googleSheet = await initializeGoogleSheet();
+    if (!googleSheet) return res.status(500).json({ error: "구글 시트 연결 실패" });
 
-    const eventSheet = doc.sheetsByTitle["이벤트"] || doc.sheetsByTitle["Events"];
+    const eventSheet = googleSheet.sheetsByTitle["이벤트"] || googleSheet.sheetsByTitle["Events"];
     if (!eventSheet) return res.json({ events: [] });
 
     const rows = await eventSheet.getRows();
@@ -74,180 +101,212 @@ app.get("/api/events", async (_req, res) => {
     })).filter((e: any) => e.id && e.title);
 
     res.json({ events });
-  } catch (error: any) {
-    res.status(500).json({ error: "이벤트 조회 실패", detail: error?.message });
+  } catch (error) {
+    res.status(500).json({ error: "이벤트 조회 실패" });
   }
 });
 
-// 2. 멤버 합류 신청 (Applications 시트 — 호스트 검토 큐)
-app.post("/api/crew-register", async (req, res) => {
-  try {
-    const doc = await initializeGoogleSheet();
-    if (!doc) return res.status(500).json({ error: "구글 시트 연결 실패" });
-
-    const { name, email, phone, graduationYear, major, company, position, industry, motivation } = req.body;
-    if (!name || !email) return res.status(400).json({ error: "이름과 이메일은 필수입니다" });
-
-    const sheet = doc.sheetsByTitle["Applications"];
-    if (!sheet) return res.status(500).json({ error: "Applications 시트를 찾을 수 없습니다" });
-
-    await sheet.addRow({
-      "신청일시": new Date().toISOString(),
-      "이름": name,
-      "이메일": email,
-      "전화번호": phone || "",
-      "졸업년도": graduationYear || "",
-      "전공": major || "",
-      "회사": company || "",
-      "직급": position || "",
-      "직군": industry || "",
-      "동기": motivation || "",
-    });
-    res.json({ success: true });
-  } catch (error: any) {
-    res.status(500).json({ error: "합류 신청 실패", detail: error?.message });
-  }
-});
-
-// 3. 멤버 검색 (이름 → 카드 후보, 화이트리스트만 응답)
+// =============================================================================
+// 2. 멤버 검색 (이름 정확 일치 → 카드 후보, 학번 빠른순)
+// =============================================================================
 app.post("/api/member-search", async (req, res) => {
   try {
-    const doc = await initializeGoogleSheet();
-    if (!doc) return res.status(500).json({ error: "구글 시트 연결 실패" });
-
     const { name } = req.body;
     if (!name || typeof name !== "string") {
-      return res.status(400).json({ error: "이름을 입력해주세요" });
+      return res.status(400).json({ error: "이름이 필요합니다" });
+    }
+    const normalized = normalizeName(name);
+    if (normalized.length < 2) {
+      return res.status(400).json({ error: "최소 2글자 이상 입력해주세요" });
     }
 
-    const target = normalizeName(name);
-    if (target.length < 2) return res.json({ candidates: [] });
+    const googleSheet = await initializeGoogleSheet();
+    if (!googleSheet) return res.status(500).json({ error: "구글 시트 연결 실패" });
 
-    const sheet = doc.sheetsByTitle["Members"];
-    if (!sheet) return res.status(500).json({ error: "Members 시트를 찾을 수 없습니다" });
+    const memberSheet = googleSheet.sheetsByTitle["Members"];
+    if (!memberSheet) return res.json({ candidates: [] });
 
-    const rows = await sheet.getRows();
+    const rows = await memberSheet.getRows();
     const candidates = rows
-      .filter((row: any) => normalizeName(row.get("이름")) === target)
-      .map((row: any) => {
-        const o: Record<string, string> = {};
-        for (const f of MEMBER_PUBLIC_FIELDS) o[f] = String(row.get(f) || "");
-        return o;
-      })
-      // 학번 빠른 순 (시니어 상단)
-      .sort((a, b) => (parseInt(a["학번"]) || 99) - (parseInt(b["학번"]) || 99));
+      .filter((row: any) => normalizeName(row.get("이름") || "") === normalized)
+      .map(memberToPublic)
+      .sort((a: any, b: any) => {
+        const ya = a.graduationYear === "" ? 99 : parseInt(a.graduationYear);
+        const yb = b.graduationYear === "" ? 99 : parseInt(b.graduationYear);
+        return ya - yb;
+      });
 
     res.json({ candidates });
-  } catch (error: any) {
-    res.status(500).json({ error: "멤버 검색 실패", detail: error?.message });
+  } catch (error) {
+    console.error("member-search error:", error);
+    res.status(500).json({ error: "멤버 검색 실패" });
   }
 });
 
-// 4. 행사 신청 (EventRegistrations 추가 + 신규면 Members 자동 등록, 갱신 동의 시 Members 동기화)
+// =============================================================================
+// 3. 회차 참가 신청 (신규 멤버 자동 추가 + 마스터 갱신 옵션)
+// =============================================================================
 app.post("/api/event-register", async (req, res) => {
   try {
-    const doc = await initializeGoogleSheet();
-    if (!doc) return res.status(500).json({ error: "구글 시트 연결 실패" });
-
     const {
-      eventId, memberId, isNew,
-      name, graduationYear, major, gender,
-      company, position, industry, region, bio, currentTier,
+      eventId,
+      memberId,
+      isNewMember,
+      isMasterUpdate,
+      // 프로필
+      name, graduationYear, major, company, position, industry,
+      orbit, introOneLiner, region, linkedinUrl,
+      // PII
       phone, email,
-      instaId, referrerMemberId, companion, expectations,
-      updateMaster,
+      // 회차별
+      instagramId, referrerName, referrerMemberId,
+      hasCompanion, companionInfo,
+      expectations, comment,
     } = req.body;
 
-    if (!name || !phone || !email) {
-      return res.status(400).json({ error: "이름·전화번호·이메일은 필수입니다" });
+    if (!name || !phone) {
+      return res.status(400).json({ error: "이름·전화번호는 필수입니다" });
     }
 
-    const memSheet = doc.sheetsByTitle["Members"];
-    const regSheet = doc.sheetsByTitle["EventRegistrations"];
-    if (!memSheet || !regSheet) {
-      return res.status(500).json({ error: "필수 시트(Members/EventRegistrations) 없음" });
-    }
+    const googleSheet = await initializeGoogleSheet();
+    if (!googleSheet) return res.status(500).json({ error: "구글 시트 연결 실패" });
 
-    const today = new Date().toISOString().slice(0, 10);
+    const memberSheet = googleSheet.sheetsByTitle["Members"];
+    const eventRegSheet = googleSheet.sheetsByTitle["EventRegistrations"];
+    if (!memberSheet) return res.status(500).json({ error: "Members 시트 누락" });
+    if (!eventRegSheet) return res.status(500).json({ error: "EventRegistrations 시트 누락" });
+
+    await ensureEventRegHeader(eventRegSheet);
+
+    const today = new Date().toISOString().split("T")[0];
+    const nowIso = new Date().toISOString();
     let resolvedMemberId = memberId || "";
 
-    if (isNew || !memberId) {
-      // 신규 → Members 자동 추가
-      const allRows = await memSheet.getRows();
-      const lastN = allRows
-        .map((r: any) => String(r.get("member_id") || ""))
-        .filter((id: string) => /^M\d+$/.test(id))
-        .map((id: string) => parseInt(id.slice(1), 10))
-        .reduce((mx: number, n: number) => Math.max(mx, n), 0);
-      resolvedMemberId = "M" + String(lastN + 1).padStart(3, "0");
+    // 신규 → Members에 행 추가
+    if (isNewMember) {
+      const memberRows = await memberSheet.getRows();
+      const maxId = memberRows.reduce((max: number, row: any) => {
+        const id = (row.get("member_id") || "").replace(/^M/, "");
+        const num = parseInt(id);
+        return isNaN(num) ? max : Math.max(max, num);
+      }, 0);
+      resolvedMemberId = `M${String(maxId + 1).padStart(3, "0")}`;
 
-      await memSheet.addRow({
+      await memberSheet.addRow({
         "member_id": resolvedMemberId,
         "이름": name,
-        "학번": String(graduationYear || ""),
+        "학번": graduationYear || "",
         "전공": major || "",
-        "성별": gender || "",
+        "성별": "",
         "회사": company || "",
         "직급": position || "",
         "직군": industry || "",
         "거주지역": region || "",
-        "자기소개_한줄": bio || "",
-        "현재궤도": currentTier || "",
+        "자기소개_한줄": introOneLiner || "",
+        "현재궤도": orbit || "",
+        "링크드인URL": linkedinUrl || "",
         "전화번호": phone,
-        "이메일": email,
-        "유입경로": "웹폼",
+        "이메일": email || "",
+        "유입경로": "웹폼-회차신청",
         "레퍼럴_member_id": referrerMemberId || "",
+        "코어후보": "",
+        "메모": referrerName ? `초대자(텍스트): ${referrerName}` : "",
+        "1회참석": "-",
+        "2회참석": "-",
+        "3회참석": "-",
+        "총참석횟수": "0",
         "첫등록일": today,
-        "마지막참여일": today,
+        "마지막참여일": "",
         "상태": "Active",
       });
-    } else if (updateMaster) {
-      // 기존 + 갱신 동의 → Members 일부 필드 갱신
-      const allRows = await memSheet.getRows();
-      const target = allRows.find((r: any) => r.get("member_id") === memberId);
-      if (target) {
-        if (company) target.set("회사", company);
-        if (position) target.set("직급", position);
-        if (industry) target.set("직군", industry);
-        if (currentTier) target.set("현재궤도", currentTier);
-        if (region) target.set("거주지역", region);
-        if (bio) target.set("자기소개_한줄", bio);
-        if (phone) target.set("전화번호", phone);
-        if (email) target.set("이메일", email);
-        target.set("마지막참여일", today);
-        await target.save();
-      }
-    } else {
-      // 기존 + 갱신 미동의 → 마지막참여일만 갱신
-      const allRows = await memSheet.getRows();
-      const target = allRows.find((r: any) => r.get("member_id") === memberId);
-      if (target) {
-        target.set("마지막참여일", today);
-        await target.save();
+    }
+    // 기존 멤버 + 마스터 갱신 동의 → 빈 값으로 덮어쓰지 않고 변경 필드만
+    else if (isMasterUpdate && memberId) {
+      const memberRows = await memberSheet.getRows();
+      const memberRow = memberRows.find((row: any) => row.get("member_id") === memberId);
+      if (memberRow) {
+        if (company) memberRow.set("회사", company);
+        if (position) memberRow.set("직급", position);
+        if (industry) memberRow.set("직군", industry);
+        if (orbit) memberRow.set("현재궤도", orbit);
+        if (region) memberRow.set("거주지역", region);
+        if (introOneLiner) memberRow.set("자기소개_한줄", introOneLiner);
+        if (linkedinUrl) memberRow.set("링크드인URL", linkedinUrl);
+        if (phone) memberRow.set("전화번호", phone);
+        if (email) memberRow.set("이메일", email);
+        await memberRow.save();
       }
     }
 
-    // EventRegistrations 추가
-    await regSheet.addRow({
-      "신청일시": new Date().toISOString(),
-      "이벤트ID": String(eventId || ""),
-      "신청자_member_id": resolvedMemberId,
+    // EventRegistrations에 신청 추가
+    const eventRegRows = await eventRegSheet.getRows();
+    const maxRegId = eventRegRows.reduce((max: number, row: any) => {
+      const id = (row.get("registration_id") || "").replace(/^R/, "");
+      const num = parseInt(id);
+      return isNaN(num) ? max : Math.max(max, num);
+    }, 0);
+    const newRegId = `R${String(maxRegId + 1).padStart(4, "0")}`;
+
+    await eventRegSheet.addRow({
+      "registration_id": newRegId,
+      "신청일시": nowIso,
+      "event_id": eventId || "4",
+      "member_id": resolvedMemberId,
       "이름": name,
-      "회사": company || "",
       "전화번호": phone,
-      "이메일": email,
-      "신청자타입": isNew ? "신규" : "기존",
-      "인스타ID": instaId || "",
+      "이메일": email || "",
+      "인스타ID": instagramId || "",
       "초대자_member_id": referrerMemberId || "",
-      "동반자정보": companion || "",
+      "초대자_텍스트": referrerName || "",
+      "동반참석여부": hasCompanion ? "O" : "-",
+      "동반자정보": companionInfo || "",
       "기대점": expectations || "",
+      "의견": comment || "",
+      "상태": "검토중",
+      "입금여부": "-",
+    });
+
+    res.json({ success: true, registrationId: newRegId, memberId: resolvedMemberId });
+  } catch (error: any) {
+    console.error("event-register error:", error);
+    res.status(500).json({ error: "신청 실패", detail: error?.message || "" });
+  }
+});
+
+// =============================================================================
+// 4. 크루 등록 (기존 - 멤버 합류 신청)
+// =============================================================================
+app.post("/api/crew-register", async (req, res) => {
+  try {
+    const googleSheet = await initializeGoogleSheet();
+    if (!googleSheet) return res.status(500).json({ error: "구글 시트 연결 실패" });
+
+    const { name, email, phone, graduationYear, major, company, position, industry, motivation, referral } = req.body;
+
+    const crewSheet =
+      googleSheet.sheetsByTitle["크루 등록"] ||
+      googleSheet.sheetsByTitle["신청현황"] ||
+      googleSheet.sheetsByTitle["Crews"];
+    if (!crewSheet) return res.status(500).json({ error: "신청 탭을 찾을 수 없습니다" });
+
+    await crewSheet.addRow({
+      "이름": name,
+      "이메일": email,
+      "연락처": phone,
+      "졸업연도": graduationYear,
+      "전공": major,
+      "현재소속": company,
+      "직책": position,
+      "업계": industry,
+      "합류동기": motivation,
+      "추천인": referral,
+      "신청일시": new Date().toISOString(),
       "상태": "검토중",
     });
 
-    res.json({ success: true, memberId: resolvedMemberId });
-  } catch (error: any) {
-    console.error("event-register:", error);
-    res.status(500).json({ error: "행사 신청 실패", detail: error?.message });
+    res.json({ success: true });
+  } catch (error) {
+    res.status(500).json({ error: "크루 등록 실패" });
   }
 });
 
