@@ -101,17 +101,30 @@ app.use(express.json());
 // DIAG (임시): 환경변수 / 서비스 계정 / 시트 접근 단계별 진단
 // =============================================================================
 app.get("/api/_diag", async (req, res) => {
+  // raw 변수 + b64 변수 둘 다 검사. getGoogleAuth와 동일한 우선순위 적용
   const envRaw = process.env.GOOGLE_SERVICE_ACCOUNT_JSON || "";
+  const envB64 = process.env.GOOGLE_SERVICE_ACCOUNT_JSON_B64 || "";
+  let effectiveJson = "";
+  let sourceUsed = "";
+  if (envB64) {
+    try { effectiveJson = Buffer.from(envB64, "base64").toString("utf-8"); sourceUsed = "b64"; }
+    catch { effectiveJson = ""; sourceUsed = "b64-decode-failed"; }
+  } else if (envRaw) {
+    effectiveJson = envRaw; sourceUsed = "raw";
+  }
   let parsed: any = null;
   let parseError = "";
-  try { parsed = JSON.parse(envRaw); } catch (e: any) { parseError = e?.message || String(e); }
+  try { parsed = JSON.parse(effectiveJson); } catch (e: any) { parseError = e?.message || String(e); }
 
   const pk: string = parsed?.private_key || "";
   const pkNorm = normalizePrivateKey(pk);
   const result: any = {
-    envPresent: !!envRaw,
-    envLength: envRaw.length,
-    envSourceB64: !!process.env.GOOGLE_SERVICE_ACCOUNT_JSON_B64,
+    envRawPresent: !!envRaw,
+    envRawLength: envRaw.length,
+    envB64Present: !!envB64,
+    envB64Length: envB64.length,
+    sourceUsed,
+    effectiveJsonLength: effectiveJson.length,
     parseable: !!parsed,
     parseError,
     serviceAccountEmail: parsed?.client_email || null,
@@ -144,6 +157,22 @@ app.get("/api/_diag", async (req, res) => {
       result.sheetTitle = (doc as any).title;
       result.sheetCount = (doc as any).sheetCount;
       result.loadInfoMs = Date.now() - start;
+      result.sheetTitles = Object.keys((doc as any).sheetsByTitle || {});
+      const membersSheet = (doc as any).sheetsByTitle?.["Members"];
+      result.membersSheetFound = !!membersSheet;
+      if (membersSheet) {
+        try {
+          const memberRows = await membersSheet.getRows({ limit: 3 });
+          result.membersFirstRows = memberRows.map((r: any) => ({
+            id: r.get("member_id"),
+            name: r.get("이름"),
+            nameNormalized: (r.get("이름") || "").trim().replace(/\s+/g, ""),
+          }));
+          result.membersHeaderValues = (membersSheet as any).headerValues;
+        } catch (e: any) {
+          result.membersReadError = e?.message || String(e);
+        }
+      }
     } catch (e: any) {
       result.sheetAccessible = false;
       result.sheetError = e?.message || String(e);
@@ -187,6 +216,7 @@ app.get("/api/events", async (req, res) => {
 // 2. 멤버 검색 (이름 정확 일치 → 카드 후보, 학번 빠른순)
 // =============================================================================
 app.post("/api/member-search", async (req, res) => {
+  const debug: any = {};
   try {
     const { name } = req.body;
     if (!name || typeof name !== "string") {
@@ -196,14 +226,27 @@ app.post("/api/member-search", async (req, res) => {
     if (normalized.length < 2) {
       return res.status(400).json({ error: "최소 2글자 이상 입력해주세요" });
     }
+    debug.normalizedQuery = normalized;
 
     const googleSheet = await initializeGoogleSheet();
-    if (!googleSheet) return res.status(500).json({ error: "구글 시트 연결 실패" });
+    debug.sheetInitialized = !!googleSheet;
+    if (!googleSheet) return res.status(500).json({ error: "구글 시트 연결 실패", debug });
+
+    debug.sheetTitles = Object.keys((googleSheet as any).sheetsByTitle || {});
 
     const memberSheet = googleSheet.sheetsByTitle["Members"];
-    if (!memberSheet) return res.json({ candidates: [] });
+    debug.membersSheetFound = !!memberSheet;
+    if (!memberSheet) return res.json({ candidates: [], debug });
 
     const rows = await memberSheet.getRows();
+    debug.totalRows = rows.length;
+    if (rows[0]) {
+      const firstName = rows[0].get("이름") || "";
+      debug.firstRowName = firstName;
+      debug.firstRowNormalized = normalizeName(firstName);
+      debug.firstRowMatchesQuery = normalizeName(firstName) === normalized;
+    }
+
     const candidates = rows
       .filter((row: any) => normalizeName(row.get("이름") || "") === normalized)
       .map(memberToPublic)
@@ -213,10 +256,11 @@ app.post("/api/member-search", async (req, res) => {
         return ya - yb;
       });
 
-    res.json({ candidates });
-  } catch (error) {
+    debug.candidatesCount = candidates.length;
+    res.json({ candidates, debug });
+  } catch (error: any) {
     console.error("member-search error:", error);
-    res.status(500).json({ error: "멤버 검색 실패" });
+    res.status(500).json({ error: "멤버 검색 실패", message: error?.message, debug });
   }
 });
 
