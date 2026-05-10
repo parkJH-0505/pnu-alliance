@@ -404,10 +404,7 @@ app.post("/api/crew-register", async (req, res) => {
 
     const { name, email, phone, graduationYear, major, company, position, industry, motivation, referral } = req.body;
 
-    const crewSheet =
-      googleSheet.sheetsByTitle["크루 등록"] ||
-      googleSheet.sheetsByTitle["신청현황"] ||
-      googleSheet.sheetsByTitle["Crews"];
+    const crewSheet = googleSheet.sheetsByTitle["홈페이지_크루 등록"];
     if (!crewSheet) return res.status(500).json({ error: "신청 탭을 찾을 수 없습니다" });
 
     await crewSheet.addRow({
@@ -416,12 +413,12 @@ app.post("/api/crew-register", async (req, res) => {
       "연락처": phone,
       "졸업연도": graduationYear,
       "전공": major,
-      "현재소속": company,
-      "직책": position,
+      "소속(회사/학교)": company,
+      "직책/역할": position,
       "업계": industry,
-      "합류동기": motivation,
+      "합류 동기": motivation,
       "추천인": referral,
-      "신청일시": new Date().toISOString(),
+      "신청일시": new Date().toLocaleString("ko-KR", { timeZone: "Asia/Seoul" }),
       "상태": "검토중",
     });
 
