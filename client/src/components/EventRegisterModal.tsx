@@ -461,7 +461,7 @@ export default function EventRegisterModal({ isOpen, onClose, event }: Props) {
                   </p>
                   <div className="space-y-4">
                     <Field label="인스타그램 ID 또는 링크드인 주소" value={form.instagramId} onChange={(v) => updateField("instagramId", v)} placeholder="@your_id 또는 linkedin.com/in/..." />
-                    <Field label="초대해주신 분 (있으면)" value={form.referrerName} onChange={(v) => updateField("referrerName", v)} placeholder="예) 박준홍" />
+                    <Field label="초대해주신 분 (있으면)" value={form.referrerName} onChange={(v) => updateField("referrerName", v)} placeholder="예) 박준홍, 성현두" />
                     <label className="flex items-start gap-2 cursor-pointer">
                       <input type="checkbox" checked={form.hasCompanion} onChange={(e) => updateField("hasCompanion", e.target.checked)} className="mt-0.5 accent-gold" />
                       <span className="text-ivory/60 text-sm" style={{ fontFamily: "var(--font-body)", fontWeight: 300 }}>
@@ -735,8 +735,8 @@ function TextareaField({
 function OrbitHelp() {
   return (
     <span className="relative inline-block group ml-auto">
-      <span className="text-ivory/35 hover:text-gold/70 transition-colors cursor-help inline-flex items-center" aria-label="궤도 설명">
-        <HelpCircle size={12} />
+      <span className="text-gold/60 hover:text-gold transition-colors cursor-help inline-flex items-center" aria-label="궤도 설명">
+        <HelpCircle size={14} />
       </span>
       <div className="absolute z-30 right-0 top-full mt-2 w-72 p-3 bg-charcoal-deep border border-gold/30 shadow-2xl invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
         <p className="text-gold/80 text-[11px] mb-2" style={{ fontFamily: "var(--font-body)", fontWeight: 500 }}>지금 본인은 어느 단계인가요?</p>
