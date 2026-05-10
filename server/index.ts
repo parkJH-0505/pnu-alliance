@@ -23,7 +23,7 @@ async function initializeGoogleSheet() {
   try {
     const doc = new GoogleSpreadsheet(SHEET_ID, new JWT({
       email: serviceAccount.client_email,
-      key: serviceAccount.private_key,
+      key: (serviceAccount.private_key || "").replace(/\\n/g, "\n"),
       scopes: ["https://www.googleapis.com/auth/spreadsheets"],
     }));
     await doc.loadInfo();
@@ -100,7 +100,7 @@ app.get("/api/_diag", async (req, res) => {
       const start = Date.now();
       const doc = new GoogleSpreadsheet(SHEET_ID, new JWT({
         email: parsed.client_email,
-        key: parsed.private_key,
+        key: (parsed.private_key || "").replace(/\\n/g, "\n"),
         scopes: ["https://www.googleapis.com/auth/spreadsheets"],
       }));
       await Promise.race([
