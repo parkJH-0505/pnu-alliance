@@ -25,8 +25,8 @@ const INIT: FormData = {
   company:"",position:"",industry:"",motivation:"",referral:"",
 };
 
-// Google Apps Script 웹 앱 URL
-const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxhTA7awEpit_Jdak6bhTJyXLRJQrSY02BARDP0bMVIit2KbcOIhcDbB9jFi6xMANO3rA/exec";
+// API 엔드포인트
+const API_BASE_URL = "/api";
 
 function Field({ label, name, value, onChange, placeholder, type="text", required=false }: {
   label: string; name: keyof FormData; value: string;
@@ -95,22 +95,24 @@ export default function JoinSection() {
           referral: form.referral,
         };
 
-        console.log("📤 폼 데이터 전송 시작:", payload);
-        console.log("🔗 GAS URL:", GAS_WEB_APP_URL);
+        console.log("📤 크루 등록 데이터 전송:", payload);
 
-        const response = await fetch(GAS_WEB_APP_URL, {
+        const response = await fetch(`${API_BASE_URL}/crew-register`, {
           method: "POST",
-          mode: "no-cors",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify(payload),
         });
 
-        console.log("✅ 네트워크 요청 완료. 상태:", response.status, response.statusText);
-        console.log("📝 구글 시트에 데이터가 기록되었습니다. 시트를 새로고침해서 확인해주세요.");
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
 
-        // 약간의 지연 후 성공 표시 (GAS 처리 시간 고려)
+        const result = await response.json();
+        console.log("✅ 크루 등록 완료:", result);
+
+        // 약간의 지연 후 성공 표시
         await new Promise(r => setTimeout(r, 800));
         setSubmitted(true);
         setStep(3);
