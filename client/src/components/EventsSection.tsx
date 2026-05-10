@@ -23,7 +23,70 @@ interface Event {
   subtitle?: string;
   tags?: string[];
   featured?: boolean;
+  registerUrl?: string;
 }
+
+const FALLBACK_EVENTS: Event[] = [
+  {
+    id: "4",
+    title: "4th Meetup — The Bridge",
+    subtitle: "추천으로 잇는 부산대 동문 네트워크",
+    date: "2026-05-29",
+    time: "19:30",
+    location: "강남 일대 (확정 시 안내)",
+    capacity: 40,
+    registered: 0,
+    description:
+      "기존 멤버가 신뢰하는 사람을 1명 데려오는 회차. Phase 1 학번 중심 딥톡에서 시작해 Phase 2 직무 중심 스탠딩 파티로 전환됩니다. 동반 참석 두 분께는 다음 날 애프터 커피챗 지원금이 전달됩니다.",
+    type: "upcoming",
+    label: "Upcoming",
+    featured: true,
+    tags: ["The Bridge", "추천 기반", "참가비 5만"],
+    registerUrl: "#join",
+  },
+  {
+    id: "3",
+    title: "3rd Meetup — Rendezvous",
+    subtitle: "두 궤도가 처음 도킹한 밤",
+    date: "2026-03-20",
+    time: "19:30",
+    location: "서울 잠원동",
+    capacity: 31,
+    registered: 31,
+    description:
+      "1·2회차 멤버가 처음 한 자리에 모인 통합 라운드. 31명, 학번 07~21 전 세대가 한 자리에. 주니어와 시니어가 처음으로 같은 좌표에 모인 변곡점.",
+    type: "past",
+    tags: ["Rendezvous", "통합", "31명"],
+  },
+  {
+    id: "2",
+    title: "2nd Meetup — Rocket",
+    subtitle: "30대 시니어들의 본격 추진",
+    date: "2026-01-29",
+    time: "19:30",
+    location: "서울 강남",
+    capacity: 19,
+    registered: 19,
+    description:
+      "30대 초중반 시니어 19명. AWS, 우아한형제들, 데이터브릭스, 토스증권, 삼일회계법인, 법무법인 등 다양한 분야. 행사 후 한 참석자의 자발적 링크드인 후기에 100+ 반응.",
+    type: "past",
+    tags: ["Rocket", "시니어", "19명"],
+  },
+  {
+    id: "1",
+    title: "1st Meetup — Launcher",
+    subtitle: "첫 점화, 19명이 모인 밤",
+    date: "2025-11-26",
+    time: "19:30",
+    location: "서울 강남",
+    capacity: 19,
+    registered: 19,
+    description:
+      "PNU Alliance의 첫 라운드. 20대 중후반 주니어 19명. 핑거푸드와 맥주, 자기소개 라운드 → 자유 네트워킹. '처음인데 어색하지 않다'는 후기가 많았던 밤.",
+    type: "past",
+    tags: ["Launcher", "주니어", "19명"],
+  },
+];
 
 function useCountdown(targetDate: string) {
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0 });
@@ -134,13 +197,23 @@ function EventCard({ event, index }: { event: Event; index: number }) {
           {event.description}
         </p>
         {event.tags && event.tags.length > 0 && (
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-2 mb-5">
             {event.tags.map((tag, i) => (
               <span key={i} className="text-gold/50 text-xs px-2 py-1 border border-gold/20">
                 #{tag}
               </span>
             ))}
           </div>
+        )}
+        {!isPast && event.featured && event.registerUrl && (
+          <a
+            href={event.registerUrl}
+            className="inline-flex items-center gap-2 px-5 py-3 bg-gold text-charcoal-deep text-sm tracking-[0.1em] uppercase hover:bg-gold-light transition-all duration-300"
+            style={{ fontFamily: "var(--font-body)", fontWeight: 500 }}
+          >
+            신청하기
+            <ArrowRight size={14} />
+          </a>
         )}
       </div>
     </motion.div>
@@ -162,33 +235,35 @@ export default function EventsSection() {
         const response = await fetch("/api/events");
         const data = await response.json();
 
-        if (data.events && Array.isArray(data.events)) {
-          // 이벤트 데이터 정규화
+        if (data.events && Array.isArray(data.events) && data.events.length > 0) {
+          // 가장 가까운 upcoming 1개만 featured
+          const sortedUpcoming = [...data.events]
+            .filter((e: any) => new Date(e.date) >= new Date())
+            .sort((a: any, b: any) => new Date(a.date).getTime() - new Date(b.date).getTime());
+          const firstUpcomingId = sortedUpcoming[0]?.id;
+
           const normalizedEvents = data.events.map((event: any) => {
             const eventDate = new Date(event.date);
-            const now = new Date();
-            const isPast = eventDate < now;
-
+            const isPast = eventDate < new Date();
             return {
               ...event,
               id: event.id || event.title,
               type: isPast ? "past" : "upcoming",
               label: isPast ? "Past Event" : "Upcoming",
-              subtitle: `${event.date} · ${event.location}`,
-              tags: ["행사"],
-              featured: !isPast && event.id === "1", // 첫 번째 이벤트를 featured로
+              subtitle: event.subtitle || `${event.date} · ${event.location}`,
+              tags: event.tags || ["행사"],
+              featured: !isPast && event.id === firstUpcomingId,
             };
           });
-
           setEvents(normalizedEvents);
-          console.log("✅ 이벤트 로드 완료:", normalizedEvents.length);
         } else {
-          console.warn("⚠️  이벤트 데이터 형식 오류");
-          setEvents([]);
+          // API 응답 비어있음 → fallback 사용
+          setEvents(FALLBACK_EVENTS);
         }
       } catch (error) {
-        console.error("❌ 이벤트 로드 오류:", error);
-        setEvents([]);
+        // API 실패 → fallback 사용
+        console.warn("Events API fallback to local data:", error);
+        setEvents(FALLBACK_EVENTS);
       } finally {
         setLoading(false);
       }
@@ -223,7 +298,7 @@ export default function EventsSection() {
             행사 일정
           </h2>
           <p className="text-ivory/50 text-lg max-w-2xl" style={{ fontFamily: "var(--font-body)", fontWeight: 300 }}>
-            PNU Alliance의 다양한 행사에 참여하세요
+            두 달에 한 번, 부산대 출신들이 서울에서 만나는 자리
           </p>
         </motion.div>
 
