@@ -1,3 +1,4 @@
+import { initializeDatabase } from './googleSheetsDb';
 import "dotenv/config";
 import express from "express";
 import { createServer } from "http";
@@ -29,6 +30,7 @@ async function findAvailablePort(startPort: number = 3000): Promise<number> {
 }
 
 async function startServer() {
+  await initializeDatabase();
   const app = express();
   const server = createServer(app);
   // Configure body parser with larger size limit for file uploads
