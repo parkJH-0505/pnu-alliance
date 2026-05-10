@@ -72,10 +72,10 @@ const EMPTY_FORM: FormData = {
 
 const ORBITS = ["Ground Crew", "Launcher", "Rocket", "Orbiter", "Galaxy", "Cosmos"];
 const INDUSTRIES = [
-  "기술 · IT · 데이터", "기획 · 전략 · 컨설팅", "마케팅 · 브랜딩 · 콘텐츠",
-  "영업 · 사업개발 · 고객", "금융 · 투자 · 회계", "디자인 · 크리에이티브 · 예술",
-  "연구 · 공공 · 교육 · 전문직", "창업 · 대표 · 프리랜서",
-  "건설/건축 · 엔지니어링 · 인프라", "HR · 조직 · 인사",
+  "기술·IT·데이터", "기획·전략·컨설팅", "마케팅·브랜딩·콘텐츠",
+  "영업·사업개발·고객", "금융·투자·회계", "디자인·크리에이티브·예술",
+  "연구·공공·교육·전문직", "창업·대표·프리랜서",
+  "건설·건축·엔지니어링·인프라", "HR·조직·인사",
   "전문직(법무, 의료 등)", "기타",
 ];
 
@@ -411,7 +411,7 @@ export default function EventRegisterModal({ isOpen, onClose, event }: Props) {
                   <Field label="전공" required value={form.major} onChange={(v) => updateField("major", v)} prefilled={!isNew && !!form.major} />
                   <Field label="회사 / 소속" required value={form.company} onChange={(v) => updateField("company", v)} prefilled={!isNew && !!form.company} />
                   <Field label="직급 / 직함" value={form.position} onChange={(v) => updateField("position", v)} prefilled={!isNew && !!form.position} />
-                  <SelectField label="직군" required value={form.industry} options={INDUSTRIES} onChange={(v) => updateField("industry", v)} prefilled={!isNew && !!form.industry} />
+                  <div className="sm:col-span-2"><MultiCheckboxField label="직군" required value={form.industry} options={INDUSTRIES} onChange={(v) => updateField("industry", v)} prefilled={!isNew && !!form.industry} /></div>
                   <SelectField label="현재 궤도" value={form.orbit} options={ORBITS} onChange={(v) => updateField("orbit", v)} prefilled={!isNew && !!form.orbit} placeholder="선택해주세요" />
                   <Field label="거주 지역" value={form.region} onChange={(v) => updateField("region", v)} prefilled={!isNew && !!form.region} placeholder="예) 서울 마포구" />
                 </div>
@@ -715,6 +715,81 @@ function TextareaField({
         className="px-3 py-2.5 bg-charcoal-deep border border-gold/15 text-ivory text-sm focus:outline-none focus:border-gold/40 resize-none"
         style={{ fontFamily: "var(--font-body)" }}
       />
+    </div>
+  );
+}
+
+function MultiCheckboxField({
+  label, value, options, onChange, prefilled, required,
+}: {
+  label: string;
+  value: string;
+  options: string[];
+  onChange: (v: string) => void;
+  prefilled?: boolean;
+  required?: boolean;
+}) {
+  const SEP = "/";
+  const arr = value ? value.split(SEP).map((s) => s.trim()).filter(Boolean) : [];
+  const isChecked = (opt: string) => arr.includes(opt);
+  const toggle = (opt: string) => {
+    const next = arr.includes(opt) ? arr.filter((v) => v !== opt) : [...arr, opt];
+    onChange(next.join(SEP));
+  };
+  const outOfOpts = arr.filter((v) => !options.includes(v));
+
+  return (
+    <div className="flex flex-col gap-2">
+      <label className="text-ivory/50 text-xs tracking-[0.15em] uppercase flex items-center gap-2" style={{ fontFamily: "var(--font-body)" }}>
+        {label} {required && <span className="text-gold/60">*</span>}
+        {prefilled && arr.length > 0 && <span className="text-gold/50 text-[9px] normal-case tracking-normal">이전 정보</span>}
+        {arr.length > 0 && <span className="text-gold/40 text-[9px] normal-case tracking-normal ml-auto">{arr.length}개 선택</span>}
+      </label>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
+        {options.map((opt) => {
+          const checked = isChecked(opt);
+          return (
+            <label
+              key={opt}
+              className={`flex items-center gap-2 px-3 py-2 border cursor-pointer transition-colors ${
+                checked
+                  ? "bg-gold/10 border-gold/40 text-ivory"
+                  : "bg-charcoal-deep border-gold/15 text-ivory/60 hover:border-gold/30"
+              }`}
+            >
+              <input
+                type="checkbox"
+                checked={checked}
+                onChange={() => toggle(opt)}
+                className="accent-gold shrink-0"
+              />
+              <span className="text-xs leading-tight" style={{ fontFamily: "var(--font-body)" }}>{opt}</span>
+            </label>
+          );
+        })}
+      </div>
+      {outOfOpts.length > 0 && (
+        <div className="flex flex-wrap gap-1.5 mt-1">
+          <span className="text-ivory/35 text-[10px] mr-1 self-center" style={{ fontFamily: "var(--font-body)" }}>이전 데이터:</span>
+          {outOfOpts.map((v) => (
+            <span
+              key={v}
+              className="inline-flex items-center gap-1 px-2 py-1 bg-gold/8 border border-gold/25 text-gold/70 text-[11px]"
+              style={{ fontFamily: "var(--font-body)" }}
+            >
+              {v}
+              <button
+                type="button"
+                onClick={() => toggle(v)}
+                className="text-gold/50 hover:text-gold ml-0.5 leading-none"
+                aria-label="제거"
+              >
+                ×
+              </button>
+            </span>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
