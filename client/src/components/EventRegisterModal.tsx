@@ -2,7 +2,7 @@
  * EventRegisterModal — 회차 참가 신청 모달
  * - Step 1: 본인 식별 (이름 검색 → 카드 선택, 또는 신규 분기)
  * - Step 2: 정보 입력 (prefill 시각 단서 + PII 빈칸 + 회차별 질문 + 동의)
- * - Step 3: 완료 (입금 계좌 + 카톡 + 캘린더 + 친구 페이백)
+ * - Step 3: 완료 (입금 계좌 + 카톡 + 캘린더)
  */
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -465,7 +465,7 @@ export default function EventRegisterModal({ isOpen, onClose, event }: Props) {
                     <label className="flex items-start gap-2 cursor-pointer">
                       <input type="checkbox" checked={form.hasCompanion} onChange={(e) => updateField("hasCompanion", e.target.checked)} className="mt-0.5 accent-gold" />
                       <span className="text-ivory/60 text-sm" style={{ fontFamily: "var(--font-body)", fontWeight: 300 }}>
-                        부산대 동문 1명 동반 참석합니다 <span className="text-gold/60 text-xs">(다음 날 두 분께 스벅 2만원권 페이백)</span>
+                        부산대 동문 1명 동반 참석합니다
                       </span>
                     </label>
                     {form.hasCompanion && (
@@ -584,7 +584,7 @@ export default function EventRegisterModal({ isOpen, onClose, event }: Props) {
                   <div className="p-3 border-l-2 border-gold/30 bg-charcoal-deep/40">
                     <p className="text-ivory/55 text-xs leading-relaxed" style={{ fontFamily: "var(--font-body)", fontWeight: 300 }}>
                       🌉 <span className="text-gold/80">The Bridge</span>는 추천으로 잇는 회차입니다.
-                      함께 모셔오신 동문 한 분이 있으시면 신청 후 카톡으로 연락 주세요. 행사 다음 날 두 분께 스벅 2만원권을 보내드립니다.
+                      함께 모셔오신 동문 한 분이 있으시면 신청 후 카톡으로 연락 주세요.
                     </p>
                   </div>
                 </div>
@@ -674,6 +674,7 @@ function SelectField({
   label: string; value: string; options: string[]; onChange: (v: string) => void;
   required?: boolean; prefilled?: boolean; placeholder?: string;
 }) {
+  const valueInOptions = options.includes(value);
   return (
     <div className="flex flex-col gap-1.5">
       <label className="text-ivory/50 text-xs tracking-[0.15em] uppercase flex items-center gap-2" style={{ fontFamily: "var(--font-body)" }}>
@@ -691,6 +692,7 @@ function SelectField({
         style={{ fontFamily: "var(--font-body)" }}
       >
         <option value="">{placeholder || "선택해주세요"}</option>
+        {!valueInOptions && value && <option value={value}>{value} (기존 데이터)</option>}
         {options.map((opt) => <option key={opt} value={opt}>{opt}</option>)}
       </select>
     </div>
