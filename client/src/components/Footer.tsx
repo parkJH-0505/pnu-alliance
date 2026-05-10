@@ -106,28 +106,32 @@ export default function Footer() {
             <ul className="space-y-2">
               <li>
                 <a
-                  href="mailto:hello@pnualliance.com"
+                  href="mailto:pnualliance2025@gmail.com"
                   className="text-ivory/30 text-sm hover:text-gold transition-colors duration-300"
                   style={{ fontFamily: "var(--font-body)", fontWeight: 300 }}
                 >
-                  hello@pnualliance.com
+                  pnualliance2025@gmail.com
                 </a>
               </li>
               <li>
-                <span
-                  className="text-ivory/30 text-sm"
+                <a
+                  href="mailto:drg0527@gmail.com"
+                  className="text-ivory/30 text-sm hover:text-gold transition-colors duration-300"
                   style={{ fontFamily: "var(--font-body)", fontWeight: 300 }}
                 >
-                  Instagram @pnu_alliance
-                </span>
+                  drg0527@gmail.com (호스트)
+                </a>
               </li>
               <li>
-                <span
-                  className="text-ivory/30 text-sm"
+                <a
+                  href="https://open.kakao.com/o/g9PW9lui"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-ivory/30 text-sm hover:text-gold transition-colors duration-300"
                   style={{ fontFamily: "var(--font-body)", fontWeight: 300 }}
                 >
                   KakaoTalk 오픈채팅
-                </span>
+                </a>
               </li>
             </ul>
           </div>

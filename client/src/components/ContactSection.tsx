@@ -5,8 +5,7 @@
  */
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
-import { Mail, MessageCircle, Instagram, ArrowUpRight } from "lucide-react";
-import { toast } from "sonner";
+import { Mail, MessageCircle, ArrowUpRight } from "lucide-react";
 
 const PATTERN_IMG =
   "https://d2xsxph8kpxj0f.cloudfront.net/310519663106122854/geKm9UWf6wUBp2hktfGtxf/abstract-pattern-Tr7NppRJwPxCvrSGiAXMtp.webp";
@@ -68,21 +67,23 @@ export default function ContactSection() {
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4">
-              <button
-                onClick={() => toast("가입 신청 기능이 곧 오픈됩니다.")}
+              <a
+                href="#join"
                 className="inline-flex items-center justify-center gap-2 px-8 py-3.5 bg-gold text-charcoal-deep text-sm tracking-[0.15em] uppercase hover:bg-gold-light transition-all duration-300"
                 style={{ fontFamily: "var(--font-body)", fontWeight: 500 }}
               >
                 합류 신청
                 <ArrowUpRight size={16} />
-              </button>
-              <button
-                onClick={() => toast("문의 기능이 곧 오픈됩니다.")}
+              </a>
+              <a
+                href="https://open.kakao.com/o/g9PW9lui"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="inline-flex items-center justify-center px-8 py-3.5 border border-ivory/20 text-ivory/70 text-sm tracking-[0.15em] uppercase hover:border-gold hover:text-gold transition-all duration-300"
                 style={{ fontFamily: "var(--font-body)", fontWeight: 300 }}
               >
                 호스트에게 문의
-              </button>
+              </a>
             </div>
           </motion.div>
 
@@ -104,32 +105,28 @@ export default function ContactSection() {
               {[
                 {
                   icon: <Mail size={18} />,
-                  label: "Email",
-                  value: "hello@pnualliance.com",
-                  href: "mailto:hello@pnualliance.com",
+                  label: "Email · 공식",
+                  value: "pnualliance2025@gmail.com",
+                  href: "mailto:pnualliance2025@gmail.com",
                 },
                 {
-                  icon: <Instagram size={18} />,
-                  label: "Instagram",
-                  value: "@pnu_alliance",
-                  href: "#",
+                  icon: <Mail size={18} />,
+                  label: "Email · 호스트(박준홍)",
+                  value: "drg0527@gmail.com",
+                  href: "mailto:drg0527@gmail.com",
                 },
                 {
                   icon: <MessageCircle size={18} />,
                   label: "KakaoTalk",
-                  value: "PNU Alliance 오픈채팅",
-                  href: "#",
+                  value: "오픈채팅 입장",
+                  href: "https://open.kakao.com/o/g9PW9lui",
                 },
               ].map((contact) => (
                 <a
                   key={contact.label}
                   href={contact.href}
-                  onClick={(e) => {
-                    if (contact.href === "#") {
-                      e.preventDefault();
-                      toast("링크가 곧 연결됩니다.");
-                    }
-                  }}
+                  target={contact.href.startsWith("http") ? "_blank" : undefined}
+                  rel={contact.href.startsWith("http") ? "noopener noreferrer" : undefined}
                   className="group flex items-center gap-4 p-4 border border-gold/8 hover:border-gold/25 transition-all duration-400"
                 >
                   <div className="text-gold/50 group-hover:text-gold transition-colors duration-300">
