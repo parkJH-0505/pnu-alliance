@@ -256,9 +256,9 @@ function EventCard({ event, index, onRegisterClick }: { event: Event; index: num
 // 나선형 좌표 — 4개 카드 기준 (밖 → 안 시계방향)
 const SPIRAL_POSITIONS = [
   { left: "10%", top: "0%", scale: 1.0, rotate: -3 },    // i=0 (3차)
-  { left: "-6%", top: "17%", scale: 0.82, rotate: 7 },   // i=1 (2차)
-  { left: "20%", top: "36%", scale: 0.66, rotate: -11 }, // i=2 (1차)
-  { left: "5%", top: "55%", scale: 0.52, rotate: 14 },   // i=3 (5차+ 시점용)
+  { left: "-6%", top: "22%", scale: 0.82, rotate: 7 },   // i=1 (2차)
+  { left: "20%", top: "44%", scale: 0.66, rotate: -11 }, // i=2 (1차)
+  { left: "5%", top: "66%", scale: 0.52, rotate: 14 },   // i=3 (5차+ 시점용)
 ];
 
 function SpiralCard({
@@ -439,7 +439,7 @@ export default function EventsSection() {
               </div>
 
               {/* 우측: 나선형 지난 회차들 */}
-              <div className="relative min-h-[640px] lg:min-h-[720px]" style={{ overflow: "visible" }}>
+              <div className="relative min-h-[700px] lg:min-h-[800px]" style={{ overflow: "visible" }}>
                 {pastEvents.length > 0 ? (
                   <>
                     {pastEvents.map((event, i) => (
