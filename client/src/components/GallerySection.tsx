@@ -4,13 +4,15 @@ import { trpc } from "@/lib/trpc";
 
 const galleryItems = [
   {
+    src: "/images/tier-cosmos.jpg",
     alt: "PNU Alliance networking event",
     caption: "Spring Gathering 2025",
     subcaption: "강남 루프탑에서의 첫 만남",
     span: "col-span-2 row-span-2",
-    color: "[background:linear-gradient(135deg,oklch(0.75_0.18_49.77_/_0.1),oklch(0.4_0.1_15_/_0.1))]",
+    color: "from-gold/10 to-burgundy/10",
   },
   {
+    src: "/images/hero-space-background.jpg",
     alt: "Seoul night skyline",
     caption: "서울의 밤",
     subcaption: "우리의 무대, 서울",
@@ -18,6 +20,7 @@ const galleryItems = [
     color: "from-slate-blue/10 to-gold/10",
   },
   {
+    src: "/images/tier-galaxy.jpg",
     alt: "Cosmos tier visual",
     caption: "Cosmos Night",
     subcaption: "최정상의 만남",
@@ -25,6 +28,7 @@ const galleryItems = [
     color: "from-burgundy/10 to-gold/15",
   },
   {
+    src: "/images/tier-launcher.jpg",
     alt: "Members club interior",
     caption: "Private Lounge",
     subcaption: "멤버 전용 공간",
@@ -32,6 +36,7 @@ const galleryItems = [
     color: "from-gold/10 to-slate-blue/10",
   },
   {
+    src: "/images/tier-orbiter.jpg",
     alt: "Brand Identity",
     caption: "Brand Identity",
     subcaption: "PNU Alliance의 시그니처",
@@ -44,14 +49,22 @@ export default function GallerySection() {
   const sectionRef = useRef(null);
   const isInView = useInView(sectionRef, { once: true, margin: "-100px" });
   const { data: images = [] } = trpc.gallery.list.useQuery();
-  const displayImages = images.length > 0 ? images : galleryItems;
+  
+  const displayImages = images.length > 0 
+    ? images.map((img: any) => ({
+        src: img.imageUrl,
+        alt: img.title || "Gallery Image",
+        caption: img.title || "Gallery",
+        subcaption: img.description || "",
+        span: "col-span-1 row-span-1",
+        color: "from-gold/10 to-charcoal/10"
+      }))
+    : galleryItems;
 
   return (
     <section className="relative py-28 lg:py-40 overflow-hidden">
       <div className="absolute inset-0 bg-charcoal-deep" />
-
       <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-8" ref={sectionRef}>
-        {/* Section Header */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
@@ -60,26 +73,16 @@ export default function GallerySection() {
         >
           <div className="flex items-center gap-4 mb-8">
             <div className="w-16 h-px bg-gold/40" />
-            <span
-              className="text-gold/70 text-xs tracking-[0.35em] uppercase"
-              style={{ fontFamily: "var(--font-body)", fontWeight: 300 }}
-            >
+            <span className="text-gold/70 text-xs tracking-[0.35em] uppercase">
               Gallery
             </span>
           </div>
-          <h2
-            className="text-4xl lg:text-5xl xl:text-6xl text-ivory leading-[1.1]"
-            style={{ fontFamily: "var(--font-display)", fontWeight: 400 }}
-          >
-            우리의
-            <br />
-            <span className="text-gold-gradient italic" style={{ fontWeight: 300 }}>
-              순간들
-            </span>
+          <h2 className="text-4xl lg:text-5xl xl:text-6xl text-ivory leading-[1.1] font-display">
+            우리의<br />
+            <span className="text-gold-gradient italic font-light">순간들</span>
           </h2>
         </motion.div>
 
-        {/* Gallery Grid */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4 auto-rows-[180px] lg:auto-rows-[220px]">
           {displayImages.map((item, i) => (
             <motion.div
@@ -87,56 +90,24 @@ export default function GallerySection() {
               initial={{ opacity: 0, scale: 0.95 }}
               animate={isInView ? { opacity: 1, scale: 1 } : {}}
               transition={{ duration: 0.6, delay: i * 0.1 }}
-              className={`group relative overflow-hidden ${"span" in item ? item.span : "col-span-1 row-span-1"}`}
+              className={`relative group overflow-hidden rounded-sm ${item.span}`}
             >
-              {"imageUrl" in item ? (
+              {item.src ? (
                 <img
-                  src={item.imageUrl}
-                  alt={item.title || "Gallery image"}
+                  src={item.src}
+                  alt={item.alt}
                   className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                 />
               ) : (
-                <div className="w-full h-full [background:linear-gradient(135deg,oklch(0.75_0.18_49.77_/_0.1),oklch(0.4_0.1_15_/_0.1))] border border-gold/20 flex items-center justify-center transition-transform duration-700 group-hover:scale-110">
-                  <div className="text-gold/30 text-2xl">+</div>
-                </div>
+                <div className={`w-full h-full bg-gradient-to-br ${item.color}`} />
               )}
-              {/* Hover overlay */}
-              <div className="absolute inset-0 bg-charcoal-deep/0 group-hover:bg-charcoal-deep/70 transition-all duration-500 flex items-end">
-                <div className="p-4 lg:p-6 translate-y-full group-hover:translate-y-0 transition-transform duration-500">
-                  <p
-                    className="text-gold text-sm tracking-[0.1em]"
-                    style={{ fontFamily: "var(--font-display)", fontWeight: 500 }}
-                  >
-                    {"imageUrl" in item ? item.title || "사진" : item.caption}
-                  </p>
-                  <p
-                    className="text-ivory/50 text-xs mt-1"
-                    style={{ fontFamily: "var(--font-body)", fontWeight: 300 }}
-                  >
-                    {"imageUrl" in item ? item.description || "" : item.subcaption}
-                  </p>
-                </div>
+              <div className="absolute inset-0 bg-charcoal-deep/40 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex flex-col justify-end p-6">
+                <p className="text-gold font-display text-lg mb-1">{item.caption}</p>
+                <p className="text-ivory/70 text-xs tracking-wider">{item.subcaption}</p>
               </div>
-              {/* Gold border on hover */}
-              <div className="absolute inset-0 border border-transparent group-hover:border-gold/30 transition-all duration-500 pointer-events-none" />
             </motion.div>
           ))}
         </div>
-
-        {/* Coming Soon Note */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.8, delay: 0.5 }}
-          className="mt-12 text-center"
-        >
-          <p
-            className="text-ivory/30 text-sm italic"
-            style={{ fontFamily: "var(--font-display)", fontWeight: 400 }}
-          >
-            실제 모임 사진들이 곧 업로드될 예정입니다.
-          </p>
-        </motion.div>
       </div>
     </section>
   );
