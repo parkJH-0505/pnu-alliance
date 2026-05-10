@@ -78,6 +78,50 @@ const app = express();
 app.use(express.json());
 
 // =============================================================================
+// DIAG (임시): 환경변수 / 서비스 계정 / 시트 접근 단계별 진단
+// =============================================================================
+app.get("/api/_diag", async (req, res) => {
+  const envRaw = process.env.GOOGLE_SERVICE_ACCOUNT_JSON || "";
+  let parsed: any = null;
+  let parseError = "";
+  try { parsed = JSON.parse(envRaw); } catch (e: any) { parseError = e?.message || String(e); }
+
+  const result: any = {
+    envPresent: !!envRaw,
+    envLength: envRaw.length,
+    parseable: !!parsed,
+    parseError,
+    serviceAccountEmail: parsed?.client_email || null,
+    nodeVersion: process.version,
+  };
+
+  if (parsed) {
+    try {
+      const start = Date.now();
+      const doc = new GoogleSpreadsheet(SHEET_ID, new JWT({
+        email: parsed.client_email,
+        key: parsed.private_key,
+        scopes: ["https://www.googleapis.com/auth/spreadsheets"],
+      }));
+      await Promise.race([
+        doc.loadInfo(),
+        new Promise((_, rej) => setTimeout(() => rej(new Error("loadInfo timeout 5s")), 5000)),
+      ]);
+      result.sheetAccessible = true;
+      result.sheetTitle = (doc as any).title;
+      result.sheetCount = (doc as any).sheetCount;
+      result.loadInfoMs = Date.now() - start;
+    } catch (e: any) {
+      result.sheetAccessible = false;
+      result.sheetError = e?.message || String(e);
+    }
+  }
+
+  res.json(result);
+});
+
+
+// =============================================================================
 // 1. Events 조회 (기존)
 // =============================================================================
 app.get("/api/events", async (req, res) => {
