@@ -77,9 +77,12 @@ function memberToPublic(row: any) {
 
 // EventRegistrations 시트 헤더 lazy init
 const EVENT_REG_HEADERS = [
-  "registration_id", "신청일시", "event_id", "member_id", "이름",
-  "전화번호", "이메일", "인스타ID", "초대자_member_id", "초대자_텍스트",
-  "동반참석여부", "동반자정보", "기대점", "의견", "상태", "입금여부",
+  "registration_id", "신청일시", "event_id", "member_id", "신청자타입",
+  "이름", "학번", "전공", "회사", "직급",
+  "직군", "현재궤도", "거주지역", "자기소개_한줄", "링크드인URL",
+  "전화번호", "이메일", "인스타ID",
+  "초대자_member_id", "초대자_텍스트", "동반참석여부", "동반자정보",
+  "기대점", "의견", "상태", "입금여부",
 ];
 
 async function ensureEventRegHeader(sheet: any) {
@@ -373,7 +376,17 @@ app.post("/api/event-register", async (req, res) => {
       "신청일시": nowIso,
       "event_id": eventId || "4",
       "member_id": resolvedMemberId,
+      "신청자타입": isNewMember ? "신규" : "기존",
       "이름": name,
+      "학번": graduationYear || "",
+      "전공": major || "",
+      "회사": company || "",
+      "직급": position || "",
+      "직군": industry || "",
+      "현재궤도": orbit || "",
+      "거주지역": region || "",
+      "자기소개_한줄": introOneLiner || "",
+      "링크드인URL": linkedinUrl || "",
       "전화번호": phone,
       "이메일": email || "",
       "인스타ID": instagramId || "",
