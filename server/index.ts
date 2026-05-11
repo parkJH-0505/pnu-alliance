@@ -1,4 +1,4 @@
-// trigger redeploy 2026-05-11
+// trigger redeploy 2026-05-11 (GitHub clone retry)
 import express from "express";
 import { GoogleSpreadsheet } from "google-spreadsheet";
 import { JWT } from "google-auth-library";
