@@ -210,7 +210,7 @@ export default function EventRegisterModal({ isOpen, onClose, event }: Props) {
         introOneLiner: form.introOneLiner.trim(),
         region: form.region.trim(),
         linkedinUrl: form.linkedinUrl.trim(),
-        phone: form.phone.replace(/-/g, ""),
+        phone: form.phone,  // dashed format 그대로 (시트에서 number 변환되어 leading 0 drop 방지)
         email: form.email.trim(),
         instagramId: form.instagramId.trim(),
         referrerName: form.referrerName.trim(),
