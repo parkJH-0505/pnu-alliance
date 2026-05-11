@@ -8,17 +8,18 @@
 import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence, useScroll, useSpring } from "framer-motion";
 import { Menu, X } from "lucide-react";
+import { useLocation } from "wouter";
 
-const navLinks = [
+const navLinks: { href: string; label: string; external?: boolean }[] = [
   { href: "#about",     label: "About" },
   { href: "#manifesto", label: "Manifesto" },
   { href: "#culture",   label: "Culture" },
   { href: "#tiers",     label: "Tiers" },
   { href: "#journey",   label: "Journey" },
   { href: "#events",    label: "Events" },
-  { href: "#news",      label: "News" },
   { href: "#network",   label: "Network" },
   { href: "#hosts",     label: "Hosts" },
+  { href: "/notes",     label: "Notes", external: true },
 ];
 
 export default function Navigation() {
@@ -26,6 +27,7 @@ export default function Navigation() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [activeSection, setActiveSection] = useState("");
 
+  const [, setLocation] = useLocation();
   const { scrollYProgress } = useScroll();
   const scaleX = useSpring(scrollYProgress, { stiffness: 100, damping: 30, restDelta: 0.001 });
 
@@ -59,6 +61,17 @@ export default function Navigation() {
 
   const handleNavClick = (href: string) => {
     setMobileOpen(false);
+    if (!href.startsWith("#")) {
+      // 외부 페이지 (예: /notes) — wouter navigate
+      setLocation(href);
+      window.scrollTo({ top: 0, behavior: "auto" });
+      return;
+    }
+    // 현재 페이지가 / 가 아니면 home으로 이동 후 anchor scroll
+    if (window.location.pathname !== "/") {
+      window.location.href = "/" + href;
+      return;
+    }
     const id = href.replace("#", "");
     const el = document.getElementById(id);
     if (el) {

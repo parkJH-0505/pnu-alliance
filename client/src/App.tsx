@@ -6,12 +6,16 @@ import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import ScrollProgress from "./components/ScrollProgress";
 import Home from "./pages/Home";
+import Notes from "./pages/Notes";
+import NoteDetail from "./pages/NoteDetail";
 
 
 function Router() {
   return (
     <Switch>
       <Route path={"/"} component={Home} />
+      <Route path={"/notes"} component={Notes} />
+      <Route path={"/notes/:slug"} component={NoteDetail} />
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}
       <Route component={NotFound} />

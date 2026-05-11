@@ -11,12 +11,11 @@
  * 6. Tiers — 우주 탐사 세계관 등급 시스템
  * 7. Journey — 실제 여정 타임라인
  * 8. Events — 다음 모임
- * 9. News — 호스트의 소식
- * 10. Network — 업계 분포
- * 11. Hosts — 호스트 소개 (신규)
- * 12. Join — 합류 신청 폼
- * 13. Contact — 연락처
- * 14. Footer
+ * 9. Network — 업계 분포
+ * 10. Hosts — 호스트 소개 (신규)
+ * 11. Join — 합류 신청 폼
+ * 12. Contact — 연락처
+ * 13. Footer
  */
 import Navigation from "@/components/Navigation";
 import HeroSection from "@/components/HeroSection";
@@ -27,7 +26,6 @@ import CultureSection from "@/components/CultureSection";
 import TiersSection from "@/components/TiersSection";
 import JourneySection from "@/components/JourneySection";
 import EventsSection from "@/components/EventsSection";
-import NewsSection from "@/components/NewsSection";
 import NetworkSection from "@/components/NetworkSection";
 import HostSection from "@/components/HostSection";
 import JoinSection from "@/components/JoinSection";
@@ -46,7 +44,6 @@ export default function Home() {
       <TiersSection />
       <JourneySection />
       <EventsSection />
-      <NewsSection />
       <NetworkSection />
       <HostSection />
       <JoinSection />
