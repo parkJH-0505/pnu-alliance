@@ -10,17 +10,15 @@ import { motion, AnimatePresence, useScroll, useSpring } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import { useLocation } from "wouter";
 
-const navLinks: { href: string; label: string; external?: boolean }[] = [
-  { href: "#about",     label: "About" },
-  { href: "#manifesto", label: "Manifesto" },
-  { href: "#culture",   label: "Culture" },
-  { href: "#tiers",     label: "Tiers" },
-  { href: "#journey",   label: "Journey" },
-  { href: "#events",    label: "Events" },
-  { href: "#network",   label: "Network" },
-  { href: "#hosts",     label: "Hosts" },
-  { href: "/notes",     label: "Notes", external: true },
+const navLinks = [
+  { href: "#about",   label: "About" },
+  { href: "#journey", label: "Journey" },
+  { href: "#events",  label: "Events" },
+  { href: "#hosts",   label: "Hosts" },
 ];
+
+// Notes는 별도 페이지 — 다른 메뉴와 시각적으로 구분
+const notesLink = { href: "/notes", label: "Notes" };
 
 export default function Navigation() {
   const [scrolled, setScrolled]     = useState(false);
@@ -138,6 +136,17 @@ export default function Navigation() {
                   </a>
                 );
               })}
+              {/* 구분선 — Notes는 별도 페이지 */}
+              <span className="w-px h-3.5 bg-gold/15 mx-3" aria-hidden="true" />
+              <a
+                href={notesLink.href}
+                onClick={(e) => { e.preventDefault(); handleNavClick(notesLink.href); }}
+                className="flex items-center gap-1 px-3 py-2 text-xs tracking-[0.12em] uppercase text-gold/65 hover:text-gold transition-colors duration-300"
+                style={{ fontFamily: "var(--font-body)", fontWeight: 300 }}
+              >
+                {notesLink.label}
+                <span className="text-[9px] opacity-60">↗</span>
+              </a>
               <a
                 href="#join"
                 onClick={(e) => { e.preventDefault(); handleNavClick("#join"); }}
@@ -203,6 +212,18 @@ export default function Navigation() {
                     {link.label}
                   </motion.a>
                 ))}
+                <motion.a
+                  href={notesLink.href}
+                  onClick={(e) => { e.preventDefault(); handleNavClick(notesLink.href); }}
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: navLinks.length * 0.06, duration: 0.4 }}
+                  className="py-3 mt-3 pt-5 text-gold/75 text-xl tracking-[0.1em] uppercase hover:text-gold transition-colors duration-300 border-t border-gold/15 flex items-center gap-2"
+                  style={{ fontFamily: "var(--font-display)", fontWeight: 400 }}
+                >
+                  {notesLink.label}
+                  <span className="text-sm opacity-60">↗</span>
+                </motion.a>
               </div>
 
               <div className="p-8 border-t border-gold/10">
