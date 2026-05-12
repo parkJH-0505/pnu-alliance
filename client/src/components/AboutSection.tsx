@@ -139,17 +139,6 @@ export default function AboutSection() {
                 </p>
               </div>
             </FadeIn>
-
-            <FadeIn delay={0.25}>
-              <div className="relative group overflow-hidden rounded-sm">
-                <img
-                  src="/images/about/about-6.jpg"
-                  alt="2nd Gathering - Moment"
-                  className="w-full aspect-square object-cover transition-transform duration-700 group-hover:scale-105"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-charcoal-deep/70 to-transparent pointer-events-none" />
-              </div>
-            </FadeIn>
           </div>
 
           {/* Right Column — Images */}
