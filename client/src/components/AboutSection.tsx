@@ -144,19 +144,21 @@ export default function AboutSection() {
           {/* Right Column — Images */}
           <div className="lg:col-span-7 space-y-6">
             <FadeIn delay={0.2}>
-              <div className="relative group overflow-hidden">
-                <div className="w-full aspect-[4/3] bg-gradient-to-br from-gold/10 to-burgundy/10 border border-gold/20 flex items-center justify-center rounded-sm">
-                  <div className="text-center">
-                    <ImageIcon size={48} className="text-gold/30 mx-auto mb-3" />
-                    <p className="text-ivory/30 text-sm" style={{ fontFamily: "var(--font-body)" }}>
-                      1차 모임 사진
-                    </p>
-                    <p className="text-gold/40 text-xs mt-1" style={{ fontFamily: "var(--font-body)" }}>
-                      First Gathering · 2025.11
-                    </p>
-                  </div>
-                </div>
+              <div className="relative group overflow-hidden rounded-sm">
+                <img
+                  src="/images/about-first-gathering.jpg"
+                  alt="1st Meetup - First Gathering"
+                  className="w-full aspect-[4/3] object-cover transition-transform duration-700 group-hover:scale-105"
+                />
                 <div className="absolute inset-0 bg-gradient-to-t from-charcoal-deep/70 to-transparent pointer-events-none" />
+                <div className="absolute bottom-0 left-0 right-0 p-6">
+                  <p className="text-gold text-lg" style={{ fontFamily: "var(--font-display)", fontWeight: 500 }}>
+                    1차 모임
+                  </p>
+                  <p className="text-ivory/60 text-sm mt-1" style={{ fontFamily: "var(--font-body)" }}>
+                    First Gathering · 2025.11
+                  </p>
+                </div>
               </div>
             </FadeIn>
 
