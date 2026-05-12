@@ -191,8 +191,8 @@ export default function AboutSection() {
               </div>
             </div>
 
-            {/* Row 2: 3 equal columns with stats card in center */}
-            <div className="grid grid-cols-3 gap-3 lg:gap-4">
+            {/* Row 2: 2 photos */}
+            <div className="grid grid-cols-2 gap-3 lg:gap-4">
               <FadeIn delay={0.4}>
                 <div className="relative group overflow-hidden rounded-sm">
                   <img
@@ -204,36 +204,7 @@ export default function AboutSection() {
                 </div>
               </FadeIn>
 
-              {/* Stats Card */}
               <FadeIn delay={0.45}>
-                <div className="relative bg-charcoal border border-gold/10 p-4 lg:p-6 flex flex-col justify-center aspect-square rounded-sm">
-                  <div className="space-y-4 lg:space-y-5">
-                    {[
-                      { value: "7", label: "선배 1:1 미팅" },
-                      { value: "3", label: "정기 모임" },
-                      { value: "40+", label: "연결된 동문" },
-                    ].map((item, i) => (
-                      <div key={item.label}>
-                        {i > 0 && <div className="gold-divider mb-4 lg:mb-5" />}
-                        <span
-                          className="text-gold text-3xl lg:text-4xl block"
-                          style={{ fontFamily: "var(--font-display)", fontWeight: 300 }}
-                        >
-                          {item.value}
-                        </span>
-                        <p
-                          className="text-ivory/40 text-xs tracking-[0.2em] uppercase mt-1"
-                          style={{ fontFamily: "var(--font-body)", fontWeight: 300 }}
-                        >
-                          {item.label}
-                        </p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </FadeIn>
-
-              <FadeIn delay={0.5}>
                 <div className="relative group overflow-hidden rounded-sm">
                   <img
                     src="/images/about/about-5.jpg"
