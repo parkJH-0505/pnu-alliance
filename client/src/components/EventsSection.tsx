@@ -197,6 +197,7 @@ function EventCard({ event, index, onRegisterClick }: { event: Event; index: num
           {[
             { icon: Calendar, text: `${event.date} ${event.time}` },
             { icon: MapPin, text: event.location },
+            { icon: Users, text: `${event.capacity}명` },
           ].map((item, i) => (
             <div key={i} className="flex items-center gap-3 text-ivory/60 text-sm">
               <item.icon size={14} className="text-gold/50" />
@@ -204,6 +205,14 @@ function EventCard({ event, index, onRegisterClick }: { event: Event; index: num
             </div>
           ))}
         </div>
+        {!isPast && (
+          <div className="mb-4">
+            <div className="w-full h-1 bg-gold/10 overflow-hidden">
+              <div className="h-full bg-gold/60 transition-all duration-300" style={{ width: "47%" }} />
+            </div>
+            <p className="text-ivory/40 text-xs mt-1">47% 모집됨</p>
+          </div>
+        )}
         <p className="text-ivory/50 text-sm leading-[1.6] mb-4" style={{ fontFamily: "var(--font-body)", fontWeight: 300 }}>
           {event.description}
         </p>
