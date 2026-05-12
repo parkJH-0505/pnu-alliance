@@ -62,7 +62,7 @@ const FALLBACK_EVENTS: Event[] = [
       "1·2회차 멤버가 처음 한 자리에 모인 통합 라운드. 31명, 학번 07~21 전 세대가 한 자리에. 주니어와 시니어가 처음으로 같은 좌표에 모인 변곡점.",
     type: "past",
     tags: ["Rendezvous", "통합", "31명"],
-    coverImage: "",
+    coverImage: "/images/events/event-3.jpg",
   },
   {
     id: "2",
@@ -78,7 +78,7 @@ const FALLBACK_EVENTS: Event[] = [
       "30대 초중반 시니어 19명. AWS, 우아한형제들, 데이터브릭스, 토스증권, 삼일회계법인, 법무법인 등 다양한 분야. 행사 후 한 참석자의 자발적 링크드인 후기에 100+ 반응.",
     type: "past",
     tags: ["Rocket", "시니어", "19명"],
-    coverImage: "",
+    coverImage: "/images/events/event-2.jpg",
   },
   {
     id: "1",
@@ -94,7 +94,7 @@ const FALLBACK_EVENTS: Event[] = [
       "PNU Alliance의 첫 라운드. 20대 중후반 주니어 19명. 핑거푸드와 맥주, 자기소개 라운드 → 자유 네트워킹. '처음인데 어색하지 않다'는 후기가 많았던 밤.",
     type: "past",
     tags: ["Launcher", "주니어", "19명"],
-    coverImage: "",
+    coverImage: "/images/events/event-1.jpg",
   },
 ];
 
