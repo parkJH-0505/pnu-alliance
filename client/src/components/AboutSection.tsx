@@ -139,25 +139,14 @@ export default function AboutSection() {
                 </p>
               </div>
             </FadeIn>
-
-            <FadeIn delay={0.25}>
-              <div className="relative group overflow-hidden rounded-sm mt-6">
-                <img
-                  src="/images/about/about-6.jpg"
-                  alt="2nd Gathering - Moment"
-                  className="w-full aspect-[3/4] object-cover transition-transform duration-700 group-hover:scale-105"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-charcoal-deep/70 to-transparent pointer-events-none" />
-              </div>
-            </FadeIn>
           </div>
 
           {/* Right Column — Images */}
           <div className="lg:col-span-7">
-            {/* Row 1: Masonry Layout */}
-            <div className="grid grid-cols-3 gap-3 lg:gap-4 mb-3 lg:mb-4">
-              {/* Large horizontal image (col-span-2) */}
-              <FadeIn delay={0.2} className="col-span-2">
+            {/* Row 1: 2-column layout */}
+            <div className="grid grid-cols-2 gap-3 lg:gap-4 mb-3 lg:mb-4">
+              {/* Left: Large image */}
+              <FadeIn delay={0.2}>
                 <div className="relative group overflow-hidden rounded-sm">
                   <img
                     src="/images/about/about-1.jpg"
@@ -176,8 +165,8 @@ export default function AboutSection() {
                 </div>
               </FadeIn>
 
-              {/* Right column: 2 vertical images stacked */}
-              <div className="grid grid-rows-2 gap-3 lg:gap-4">
+              {/* Right: 3 vertical images stacked */}
+              <div className="grid grid-rows-3 gap-3 lg:gap-4">
                 <FadeIn delay={0.3}>
                   <div className="relative group overflow-hidden rounded-sm">
                     <img
@@ -199,12 +188,23 @@ export default function AboutSection() {
                     <div className="absolute inset-0 bg-gradient-to-t from-charcoal-deep/70 to-transparent pointer-events-none" />
                   </div>
                 </FadeIn>
+
+                <FadeIn delay={0.4}>
+                  <div className="relative group overflow-hidden rounded-sm">
+                    <img
+                      src="/images/about/about-6.jpg"
+                      alt="2nd Gathering - Moment"
+                      className="w-full aspect-[3/4] object-cover transition-transform duration-700 group-hover:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-charcoal-deep/70 to-transparent pointer-events-none" />
+                  </div>
+                </FadeIn>
               </div>
             </div>
 
             {/* Row 2: 3 photos */}
             <div className="grid grid-cols-3 gap-3 lg:gap-4">
-              <FadeIn delay={0.4}>
+              <FadeIn delay={0.45}>
                 <div className="relative group overflow-hidden rounded-sm">
                   <img
                     src="/images/about/about-4.jpg"
@@ -215,7 +215,7 @@ export default function AboutSection() {
                 </div>
               </FadeIn>
 
-              <FadeIn delay={0.425}>
+              <FadeIn delay={0.475}>
                 <div className="relative group overflow-hidden rounded-sm">
                   <img
                     src="/images/about/about-7.jpg"
@@ -226,7 +226,7 @@ export default function AboutSection() {
                 </div>
               </FadeIn>
 
-              <FadeIn delay={0.45}>
+              <FadeIn delay={0.5}>
                 <div className="relative group overflow-hidden rounded-sm">
                   <img
                     src="/images/about/about-5.jpg"
