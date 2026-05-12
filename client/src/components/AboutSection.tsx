@@ -155,14 +155,14 @@ export default function AboutSection() {
           {/* Right Column — Images */}
           <div className="lg:col-span-7">
             {/* Row 1: Masonry Layout */}
-            <div className="grid grid-cols-3 gap-3 lg:gap-4 mb-3 lg:mb-4">
+            <div className="grid grid-cols-3 gap-3 lg:gap-4 mb-0">
               {/* Large horizontal image (col-span-2) */}
               <FadeIn delay={0.2} className="col-span-2">
                 <div className="relative group overflow-hidden rounded-sm">
                   <img
                     src="/images/about/about-1.jpg"
                     alt="3rd Gathering - Cosmos"
-                    className="w-full aspect-[4/3] object-cover transition-transform duration-700 group-hover:scale-105"
+                    className="w-full aspect-square object-cover transition-transform duration-700 group-hover:scale-105"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-charcoal-deep/70 to-transparent pointer-events-none" />
                   <div className="absolute bottom-0 left-0 right-0 p-4 lg:p-6">
