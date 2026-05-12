@@ -141,7 +141,7 @@ export default function AboutSection() {
             </FadeIn>
 
             <FadeIn delay={0.25}>
-              <div className="relative group overflow-hidden rounded-sm mt-6">
+              <div className="relative group overflow-hidden rounded-sm">
                 <img
                   src="/images/about/about-6.jpg"
                   alt="2nd Gathering - Moment"
