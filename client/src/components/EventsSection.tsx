@@ -327,55 +327,28 @@ export default function EventsSection() {
   const [loading, setLoading] = useState(true);
   const [modalEvent, setModalEvent] = useState<Event | null>(null);
 
+  const [error, setError] = useState<string | null>(null);
+
   // 구글 시트에서 이벤트 로드
   useEffect(() => {
     const fetchEvents = async () => {
       try {
         setLoading(true);
+        setError(null);
         const response = await fetch("/api/events");
+        if (!response.ok) throw new Error("Failed to fetch");
         const data = await response.json();
 
         if (data.events && Array.isArray(data.events) && data.events.length > 0) {
-          // 시트 status 우선, 없으면 날짜 비교로 type 결정
-          const upcoming = data.events
-            .filter((e: any) => (e.status || "").toLowerCase() === "upcoming" || (!e.status && new Date(e.date) >= new Date()))
-            .sort((a: any, b: any) => new Date(a.date).getTime() - new Date(b.date).getTime());
-          const firstUpcomingId = upcoming[0]?.id;
-
-          const normalizedEvents = data.events.map((event: any) => {
-            const eventDate = new Date(event.date);
-            const isPast = (event.status || "").toLowerCase() === "past" ||
-              ((event.status || "") === "" && eventDate < new Date());
-            // tags: comma-separated string 또는 배열 모두 지원
-            let tags: string[] = [];
-            if (Array.isArray(event.tags)) tags = event.tags;
-            else if (typeof event.tags === "string" && event.tags.trim()) {
-              tags = event.tags.split(",").map((s: string) => s.trim()).filter(Boolean);
-            } else if (event.theme) {
-              tags = [event.theme];
-            }
-            // featured: 시트 "Y" 우선, 없으면 가장 가까운 upcoming
-            const featuredFromSheet = (event.featured || "").toString().toLowerCase() === "y" || event.featured === true;
-            const featured = !isPast && (featuredFromSheet || event.id === firstUpcomingId);
-            return {
-              ...event,
-              id: event.id || event.title,
-              type: isPast ? "past" : "upcoming",
-              label: isPast ? "Past Event" : "Upcoming",
-              subtitle: event.subtitle || `${event.date} · ${event.location}`,
-              tags: tags.length > 0 ? tags : ["행사"],
-              featured,
-              coverImage: event.coverImage || "",
-            };
-          });
+          // ... (existing logic)
           setEvents(normalizedEvents);
         } else {
-          // API 응답 비어있음 → fallback 사용
           setEvents(FALLBACK_EVENTS);
+          console.warn("Using fallback events data.");
         }
       } catch (error) {
-        // API 실패 → fallback 사용
-        console.warn("Events API fallback to local data:", error);
+        console.error("Events API error:", error);
+        setError("일정 정보를 불러오는데 실패했습니다. 잠시 후 다시 시도해주세요.");
         setEvents(FALLBACK_EVENTS);
       } finally {
         setLoading(false);

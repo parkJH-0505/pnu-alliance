@@ -18,7 +18,7 @@ const hosts = [
     background: "부산대학교 졸업 후 서울에서 커리어를 시작. 부산에서 서울로 올라와 혼자 싸우던 시절의 외로움과 정보의 비대칭성을 경험했다. 같은 뿌리를 가진 사람들이 서로를 알아보고 연결될 때 일어나는 변화를 직접 목격하고 싶어 PNU Alliance를 만들었다.",
     quote: "부산대 출신이 서울에서 혼자 싸우지 않아도 되는 세상을 만들고 싶었습니다. 지방 거점국립대 출신의 구조적 불균형을 깨는 것이 출발점입니다.",
     tags: ["커뮤니티 빌더", "신뢰 기반 네트워크", "세대를 잇는 구조"],
-    image: "/images/host-junhong.png",
+    image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=400",
     linkedin: "https://www.linkedin.com/in/junhong-park-1138152aa/",
   },
   {
@@ -29,7 +29,7 @@ const hosts = [
     background: "부산대학교 기계공학과 17학번 졸업. 서울에서 스타트업 생태계에서 활동 중. PNU Alliance의 운영과 멤버 온보딩을 함께 주도하며, 커뮤니티의 지속가능한 성장을 위해 노력하고 있다.",
     quote: "같은 캠퍼스를 걷고, 같은 고민을 했던 사람들이 서울에서 만날 때 생기는 에너지가 있어요. 그 에너지를 구조화하고 지속시키는 것이 우리의 역할입니다.",
     tags: ["기계공학", "스타트업", "커뮤니티 운영"],
-    image: "/images/host-hyundu.png",
+    image: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&q=80&w=400",
     linkedin: "https://www.linkedin.com/in/wiseheadhyundoo/",
   },
 ];

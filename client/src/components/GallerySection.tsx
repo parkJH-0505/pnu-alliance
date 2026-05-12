@@ -18,41 +18,42 @@ interface GalleryItem {
 
 const galleryItems: GalleryItem[] = [
   {
+    src: "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&q=80&w=800",
     alt: "PNU Alliance networking event",
     caption: "Spring Gathering 2025",
     subcaption: "강남 루프탑에서의 첫 만남",
     span: "col-span-2 row-span-2",
-    color: "from-gold/10 to-burgundy/10",
   },
   {
+    src: "https://images.unsplash.com/photo-1449824913935-59a10b8d2000?auto=format&fit=crop&q=80&w=800",
     alt: "Seoul night skyline",
     caption: "서울의 밤",
     subcaption: "우리의 무대, 서울",
     span: "col-span-1 row-span-1",
-    color: "from-slate-blue/10 to-gold/10",
   },
   {
+    src: "https://images.unsplash.com/photo-1543007630-9710e4a00a20?auto=format&fit=crop&q=80&w=800",
     alt: "Cosmos tier visual",
     caption: "Cosmos Night",
     subcaption: "최정상의 만남",
     span: "col-span-1 row-span-1",
-    color: "from-burgundy/10 to-gold/15",
   },
   {
+    src: "https://images.unsplash.com/photo-1517457373958-b7bdd4587205?auto=format&fit=crop&q=80&w=800",
     alt: "Members club interior",
     caption: "Private Lounge",
     subcaption: "멤버 전용 공간",
     span: "col-span-1 row-span-1",
-    color: "from-gold/10 to-slate-blue/10",
   },
   {
+    src: "https://images.unsplash.com/photo-1507679799987-c7377f323b88?auto=format&fit=crop&q=80&w=800",
     alt: "Brand Identity",
     caption: "Brand Identity",
     subcaption: "PNU Alliance의 시그니처",
     span: "col-span-1 row-span-1",
-    color: "from-slate-blue/15 to-burgundy/10",
   },
 ];
+
 
 export default function GallerySection() {
   const sectionRef = useRef(null);

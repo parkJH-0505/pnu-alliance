@@ -104,8 +104,11 @@ app.use(express.json());
 // DIAG (임시): 환경변수 / 서비스 계정 / 시트 접근 단계별 진단
 // =============================================================================
 app.get("/api/_diag", async (req, res) => {
+  if (process.env.NODE_ENV === "production") {
+    return res.status(404).send("Not Found");
+  }
   // raw 변수 + b64 변수 둘 다 검사. getGoogleAuth와 동일한 우선순위 적용
-  const envRaw = process.env.GOOGLE_SERVICE_ACCOUNT_JSON || "";
+
   const envB64 = process.env.GOOGLE_SERVICE_ACCOUNT_JSON_B64 || "";
   let effectiveJson = "";
   let sourceUsed = "";
