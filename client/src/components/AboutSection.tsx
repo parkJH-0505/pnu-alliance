@@ -139,6 +139,17 @@ export default function AboutSection() {
                 </p>
               </div>
             </FadeIn>
+
+            <FadeIn delay={0.25}>
+              <div className="relative group overflow-hidden rounded-sm mt-6">
+                <img
+                  src="/images/about/about-6.jpg"
+                  alt="2nd Gathering - Moment"
+                  className="w-full aspect-[3/4] object-cover transition-transform duration-700 group-hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-charcoal-deep/70 to-transparent pointer-events-none" />
+              </div>
+            </FadeIn>
           </div>
 
           {/* Right Column — Images */}
@@ -191,13 +202,24 @@ export default function AboutSection() {
               </div>
             </div>
 
-            {/* Row 2: 2 photos */}
-            <div className="grid grid-cols-2 gap-3 lg:gap-4">
+            {/* Row 2: 3 photos */}
+            <div className="grid grid-cols-3 gap-3 lg:gap-4">
               <FadeIn delay={0.4}>
                 <div className="relative group overflow-hidden rounded-sm">
                   <img
                     src="/images/about/about-4.jpg"
                     alt="3rd Gathering - Moment"
+                    className="w-full aspect-square object-cover transition-transform duration-700 group-hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-charcoal-deep/70 to-transparent pointer-events-none" />
+                </div>
+              </FadeIn>
+
+              <FadeIn delay={0.425}>
+                <div className="relative group overflow-hidden rounded-sm">
+                  <img
+                    src="/images/about/about-7.jpg"
+                    alt="2nd Gathering - Highlight"
                     className="w-full aspect-square object-cover transition-transform duration-700 group-hover:scale-105"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-charcoal-deep/70 to-transparent pointer-events-none" />
