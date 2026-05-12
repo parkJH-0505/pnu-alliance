@@ -142,66 +142,105 @@ export default function AboutSection() {
           </div>
 
           {/* Right Column — Images */}
-          <div className="lg:col-span-7 space-y-6">
-            <FadeIn delay={0.2}>
-              <div className="relative group overflow-hidden rounded-sm">
-                <img
-                  src="/images/about-first-gathering.jpg"
-                  alt="1st Meetup - First Gathering"
-                  className="w-full aspect-[4/3] object-cover transition-transform duration-700 group-hover:scale-105"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-charcoal-deep/70 to-transparent pointer-events-none" />
-                <div className="absolute bottom-0 left-0 right-0 p-6">
-                  <p className="text-gold text-lg" style={{ fontFamily: "var(--font-display)", fontWeight: 500 }}>
-                    1차 모임
-                  </p>
-                  <p className="text-ivory/60 text-sm mt-1" style={{ fontFamily: "var(--font-body)" }}>
-                    First Gathering · 2025.11
-                  </p>
-                </div>
-              </div>
-            </FadeIn>
-
-            <div className="grid grid-cols-2 gap-6">
-              <FadeIn delay={0.3}>
-                <div className="relative group overflow-hidden">
-                  <div className="w-full aspect-[3/4] bg-gradient-to-br from-slate-blue/10 to-gold/10 border border-gold/20 flex items-center justify-center rounded-sm">
-                    <div className="text-center">
-                      <ImageIcon size={40} className="text-gold/30 mx-auto mb-2" />
-                      <p className="text-ivory/30 text-xs" style={{ fontFamily: "var(--font-body)" }}>
-                        서울의 밤
-                      </p>
-                    </div>
+          <div className="lg:col-span-7">
+            {/* Row 1: Masonry Layout */}
+            <div className="grid grid-cols-3 gap-3 lg:gap-4 mb-3 lg:mb-4">
+              {/* Large horizontal image (col-span-2) */}
+              <FadeIn delay={0.2} className="col-span-2">
+                <div className="relative group overflow-hidden rounded-sm">
+                  <img
+                    src="/images/about/about-1.jpg"
+                    alt="3rd Gathering - Cosmos"
+                    className="w-full aspect-[4/3] object-cover transition-transform duration-700 group-hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-charcoal-deep/70 to-transparent pointer-events-none" />
+                  <div className="absolute bottom-0 left-0 right-0 p-4 lg:p-6">
+                    <p className="text-gold text-sm lg:text-lg" style={{ fontFamily: "var(--font-display)", fontWeight: 500 }}>
+                      3차 모임
+                    </p>
+                    <p className="text-ivory/60 text-xs lg:text-sm mt-1" style={{ fontFamily: "var(--font-body)" }}>
+                      Cosmos · 2026.03
+                    </p>
                   </div>
+                </div>
+              </FadeIn>
+
+              {/* Right column: 2 vertical images stacked */}
+              <div className="grid grid-rows-2 gap-3 lg:gap-4">
+                <FadeIn delay={0.3}>
+                  <div className="relative group overflow-hidden rounded-sm">
+                    <img
+                      src="/images/about/about-2.jpg"
+                      alt="3rd Gathering - Representative"
+                      className="w-full aspect-[3/4] object-cover transition-transform duration-700 group-hover:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-charcoal-deep/70 to-transparent pointer-events-none" />
+                  </div>
+                </FadeIn>
+
+                <FadeIn delay={0.35}>
+                  <div className="relative group overflow-hidden rounded-sm">
+                    <img
+                      src="/images/about/about-3.jpg"
+                      alt="3rd Gathering - Highlight"
+                      className="w-full aspect-[3/4] object-cover transition-transform duration-700 group-hover:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-charcoal-deep/70 to-transparent pointer-events-none" />
+                  </div>
+                </FadeIn>
+              </div>
+            </div>
+
+            {/* Row 2: 3 equal columns with stats card in center */}
+            <div className="grid grid-cols-3 gap-3 lg:gap-4">
+              <FadeIn delay={0.4}>
+                <div className="relative group overflow-hidden rounded-sm">
+                  <img
+                    src="/images/about/about-4.jpg"
+                    alt="3rd Gathering - Moment"
+                    className="w-full aspect-square object-cover transition-transform duration-700 group-hover:scale-105"
+                  />
                   <div className="absolute inset-0 bg-gradient-to-t from-charcoal-deep/70 to-transparent pointer-events-none" />
                 </div>
               </FadeIn>
 
-              <FadeIn delay={0.4}>
-                <div className="relative bg-charcoal border border-gold/10 p-6 flex flex-col justify-center aspect-[3/4] rounded-sm">
-                  <div className="space-y-5">
+              {/* Stats Card */}
+              <FadeIn delay={0.45}>
+                <div className="relative bg-charcoal border border-gold/10 p-4 lg:p-6 flex flex-col justify-center aspect-square rounded-sm">
+                  <div className="space-y-4 lg:space-y-5">
                     {[
                       { value: "7", label: "선배 1:1 미팅" },
                       { value: "3", label: "정기 모임" },
                       { value: "40+", label: "연결된 동문" },
                     ].map((item, i) => (
                       <div key={item.label}>
-                        {i > 0 && <div className="gold-divider mb-5" />}
+                        {i > 0 && <div className="gold-divider mb-4 lg:mb-5" />}
                         <span
-                          className="text-gold text-4xl lg:text-5xl block"
+                          className="text-gold text-3xl lg:text-4xl block"
                           style={{ fontFamily: "var(--font-display)", fontWeight: 300 }}
                         >
                           {item.value}
                         </span>
                         <p
                           className="text-ivory/40 text-xs tracking-[0.2em] uppercase mt-1"
-                          style={{ fontFamily: "var(--font-body)" }}
+                          style={{ fontFamily: "var(--font-body)", fontWeight: 300 }}
                         >
                           {item.label}
                         </p>
                       </div>
                     ))}
                   </div>
+                </div>
+              </FadeIn>
+
+              <FadeIn delay={0.5}>
+                <div className="relative group overflow-hidden rounded-sm">
+                  <img
+                    src="/images/about/about-5.jpg"
+                    alt="2nd Gathering - Moment"
+                    className="w-full aspect-square object-cover transition-transform duration-700 group-hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-charcoal-deep/70 to-transparent pointer-events-none" />
                 </div>
               </FadeIn>
             </div>
