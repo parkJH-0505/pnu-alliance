@@ -6,7 +6,7 @@
  */
 import { motion, useInView, AnimatePresence } from "framer-motion";
 import { useRef, useState } from "react";
-import { Check, ArrowRight, ArrowLeft, Loader2 } from "lucide-react";
+import { Check, ArrowRight, ArrowLeft, Loader2, Mail, MessageCircle, ArrowUpRight } from "lucide-react";
 
 const GRADUATION_YEARS = Array.from({ length: 30 }, (_, i) => String(2025 - i));
 const INDUSTRIES = [
@@ -264,6 +264,68 @@ export default function JoinSection() {
             </div>
           </motion.div>
         </div>
+
+        {/* Contact Info Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.8, delay: 0.3 }}
+          className="mt-24 border-t border-gold/10 pt-16 lg:pt-20"
+        >
+          <h3
+            className="text-2xl text-ivory mb-8"
+            style={{ fontFamily: "var(--font-display)", fontWeight: 400 }}
+          >
+            다른 방법으로 연락하기
+          </h3>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {[
+              {
+                icon: <Mail size={20} />,
+                label: "Email · 공식",
+                value: "pnualliance2025@gmail.com",
+                href: "mailto:pnualliance2025@gmail.com",
+              },
+              {
+                icon: <Mail size={20} />,
+                label: "Email · 호스트(박준홍)",
+                value: "drg0527@gmail.com",
+                href: "mailto:drg0527@gmail.com",
+              },
+              {
+                icon: <MessageCircle size={20} />,
+                label: "KakaoTalk",
+                value: "오픈채팅 입장",
+                href: "https://open.kakao.com/o/g9PW9lui",
+              },
+            ].map((contact) => (
+              <a
+                key={contact.label}
+                href={contact.href}
+                target={contact.href.startsWith("http") ? "_blank" : undefined}
+                rel={contact.href.startsWith("http") ? "noopener noreferrer" : undefined}
+                className="group p-5 border border-gold/10 hover:border-gold/30 transition-all duration-300 flex flex-col gap-3"
+              >
+                <div className="text-gold/50 group-hover:text-gold transition-colors">
+                  {contact.icon}
+                </div>
+                <span
+                  className="text-gold/60 text-xs tracking-[0.2em] uppercase"
+                  style={{ fontFamily: "var(--font-body)", fontWeight: 300 }}
+                >
+                  {contact.label}
+                </span>
+                <span
+                  className="text-ivory/70 text-sm group-hover:text-gold transition-colors"
+                  style={{ fontFamily: "var(--font-body)", fontWeight: 400 }}
+                >
+                  {contact.value}
+                </span>
+              </a>
+            ))}
+          </div>
+        </motion.div>
       </div>
     </section>
   );

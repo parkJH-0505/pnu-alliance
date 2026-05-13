@@ -268,18 +268,18 @@ export default function TiersSection() {
               className="text-4xl lg:text-5xl xl:text-6xl text-ivory leading-[1.05]"
               style={{ fontFamily: "var(--font-display)", fontWeight: 400 }}
             >
-              당신의 궤도는
+              당신은 어떤
               <br />
               <span className="text-gold-gradient italic" style={{ fontWeight: 300 }}>
-                어느 단계인가
+                궤도에 올라있나요?
               </span>
             </h2>
             <p
               className="text-ivory/50 text-base leading-[1.9] lg:max-w-sm"
               style={{ fontFamily: "var(--font-body)", fontWeight: 300 }}
             >
-              PNU Alliance는 단순한 모임이 아니다. 각자의 성장 단계에 맞는 연결과 기회를 제공하는 구조화된 네트워크다.
-              카드를 클릭하면 상세 정보를 볼 수 있다.
+              PNU Alliance는 각자의 성장 단계에 맞는 연결과 기회를 제공하는 구조화된 네트워크입니다.
+              카드를 클릭하면 상세 정보를 볼 수 있습니다.
             </p>
           </div>
         </motion.div>

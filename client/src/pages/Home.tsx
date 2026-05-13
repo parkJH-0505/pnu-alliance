@@ -6,30 +6,26 @@
  * 1. Hero — 핵심 메시지
  * 2. About — 왜 존재하는가
  * 3. TestimonialBand — 실제 멤버 인용
- * 4. Manifesto — 선언문 + 문화 헌법 + 선배 명언
- * 5. Culture — Culture Code (신규)
- * 6. Tiers — 우주 탐사 세계관 등급 시스템
- * 7. Journey — 실제 여정 타임라인
- * 8. Events — 다음 모임
- * 9. Network — 업계 분포
- * 10. Hosts — 호스트 소개 (신규)
- * 11. Join — 합류 신청 폼
- * 12. Contact — 연락처
- * 13. Footer
+ * 4. ValuesSection — 문화 헌법(4원칙) + 행동 코드(6가지) + 선배 명언 (통합)
+ * 5. Tiers — 우주 탐사 세계관 등급 시스템
+ * 6. Journey — 실제 여정 타임라인
+ * 7. Events — 다음 모임
+ * 8. Network — 업계 분포
+ * 9. Hosts — 호스트 소개
+ * 10. Join — 합류 신청 폼 + 연락처
+ * 11. Footer
  */
 import Navigation from "@/components/Navigation";
 import HeroSection from "@/components/HeroSection";
 import AboutSection from "@/components/AboutSection";
 import TestimonialBand from "@/components/TestimonialBand";
-import ManifestoSection from "@/components/ManifestoSection";
-import CultureSection from "@/components/CultureSection";
+import ValuesSection from "@/components/ValuesSection";
 import TiersSection from "@/components/TiersSection";
 import JourneySection from "@/components/JourneySection";
 import EventsSection from "@/components/EventsSection";
 import NetworkSection from "@/components/NetworkSection";
 import HostSection from "@/components/HostSection";
 import JoinSection from "@/components/JoinSection";
-import ContactSection from "@/components/ContactSection";
 import Footer from "@/components/Footer";
 
 export default function Home() {
@@ -39,15 +35,13 @@ export default function Home() {
       <HeroSection />
       <AboutSection />
       <TestimonialBand />
-      <ManifestoSection />
-      <CultureSection />
+      <ValuesSection />
       <TiersSection />
       <JourneySection />
       <EventsSection />
       <NetworkSection />
       <HostSection />
       <JoinSection />
-      <ContactSection />
       <Footer />
     </div>
   );

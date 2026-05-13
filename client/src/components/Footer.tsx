@@ -47,7 +47,7 @@ export default function Footer() {
             <ul className="space-y-2">
               {[
                 { label: "About", href: "#about" },
-                { label: "Manifesto", href: "#manifesto" },
+                { label: "Values", href: "#values" },
                 { label: "Tiers", href: "#tiers" },
                 { label: "Journey", href: "#journey" },
                 { label: "Events", href: "#events" },

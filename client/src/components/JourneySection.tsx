@@ -218,6 +218,12 @@ export default function JourneySection() {
               숲이 되기까지
             </span>
           </h2>
+          <p
+            className="text-ivory/50 text-lg max-w-2xl mx-auto mt-6"
+            style={{ fontFamily: "var(--font-body)", fontWeight: 300 }}
+          >
+            PNU Alliance가 지난 몇 개월간 만들어온 이야기입니다.
+          </p>
         </motion.div>
 
         {/* Timeline */}
@@ -233,6 +239,28 @@ export default function JourneySection() {
             <MilestoneItem key={m.phase} milestone={m} index={i} />
           ))}
         </div>
+
+        {/* Closing CTA */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.8, delay: 0.5 }}
+          className="mt-16 lg:mt-20 text-center"
+        >
+          <p
+            className="text-ivory/40 text-sm italic mb-6"
+            style={{ fontFamily: "var(--font-display)", fontWeight: 400 }}
+          >
+            "이 여정은 아직 끝나지 않았다."
+          </p>
+          <a
+            href="#events"
+            className="inline-flex items-center gap-2 px-8 py-3 border border-gold/30 text-gold/70 text-xs tracking-[0.2em] uppercase hover:bg-gold/5 hover:text-gold transition-all duration-300"
+            style={{ fontFamily: "var(--font-body)", fontWeight: 400 }}
+          >
+            다음 회차 보기 →
+          </a>
+        </motion.div>
       </div>
     </section>
   );

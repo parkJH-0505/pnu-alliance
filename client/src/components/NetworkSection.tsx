@@ -192,6 +192,28 @@ export default function NetworkSection() {
             ))}
           </div>
         </motion.div>
+
+        {/* Bridge to Hosts */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.8, delay: 0.6 }}
+          className="mt-20 lg:mt-28 text-center"
+        >
+          <p
+            className="text-ivory/40 text-sm mb-6"
+            style={{ fontFamily: "var(--font-body)", fontWeight: 300 }}
+          >
+            이 커뮤니티를 운영하는 두 호스트를 소개합니다.
+          </p>
+          <a
+            href="#hosts"
+            className="inline-flex items-center gap-2 text-gold/70 text-xs tracking-[0.15em] uppercase hover:text-gold transition-colors duration-300"
+            style={{ fontFamily: "var(--font-body)", fontWeight: 300 }}
+          >
+            호스트 소개 →
+          </a>
+        </motion.div>
       </div>
     </section>
   );

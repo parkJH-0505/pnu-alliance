@@ -382,7 +382,7 @@ export default function EventsSection() {
             행사 일정
           </h2>
           <p className="text-ivory/50 text-lg max-w-2xl" style={{ fontFamily: "var(--font-body)", fontWeight: 300 }}>
-            두 달에 한 번, 부산대 출신들이 서울에서 만나는 자리
+            두 달에 한 번, 부산대 출신들이 서울에서 만나고 연결하는 자리입니다
           </p>
         </motion.div>
 
