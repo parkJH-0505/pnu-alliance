@@ -379,10 +379,11 @@ export default function EventsSection() {
             </span>
           </div>
           <h2 className="text-4xl lg:text-5xl xl:text-6xl text-ivory leading-[1.05] mb-6" style={{ fontFamily: "var(--font-display)", fontWeight: 400 }}>
-            행사 일정
+            두 달에 한 번,<br />
+            <span className="text-gold-gradient italic" style={{ fontWeight: 300 }}>가장 밀도 있는 하룻밤</span>
           </h2>
           <p className="text-ivory/50 text-lg max-w-2xl" style={{ fontFamily: "var(--font-body)", fontWeight: 300 }}>
-            두 달에 한 번, 부산대 출신들이 서울에서 만나고 연결하는 자리입니다
+            단순한 모임이 아니다. 매 회차는 이전 회차 위에 쌓이고, 모이는 사람마다 새로운 연결이 생긴다.
           </p>
         </motion.div>
 

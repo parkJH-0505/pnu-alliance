@@ -222,7 +222,7 @@ export default function JourneySection() {
             className="text-ivory/50 text-lg max-w-2xl mx-auto mt-6"
             style={{ fontFamily: "var(--font-body)", fontWeight: 300 }}
           >
-            PNU Alliance가 지난 몇 개월간 만들어온 이야기입니다.
+            Phase 0의 씨앗이 Phase 3을 지나고 있다. 모든 단계는 실제로 일어난 일들이다.
           </p>
         </motion.div>
 

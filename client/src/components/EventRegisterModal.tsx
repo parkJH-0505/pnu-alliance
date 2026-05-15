@@ -413,7 +413,7 @@ export default function EventRegisterModal({ isOpen, onClose, event }: Props) {
                   <Field label="직급 / 직함" value={form.position} onChange={(v) => updateField("position", v)} prefilled={!isNew && !!form.position} />
                   <div className="sm:col-span-2"><MultiCheckboxField label="직군" required value={form.industry} options={INDUSTRIES} onChange={(v) => updateField("industry", v)} prefilled={!isNew && !!form.industry} /></div>
                   <SelectField label="현재 궤도" value={form.orbit} options={ORBITS} onChange={(v) => updateField("orbit", v)} prefilled={!isNew && !!form.orbit} placeholder="선택해주세요" helpTooltip={<OrbitHelp />} />
-                  <Field label="거주 지역" value={form.region} onChange={(v) => updateField("region", v)} prefilled={!isNew && !!form.region} placeholder="예) 서울 마포구" />
+                  <Field label="근무 지역" required value={form.region} onChange={(v) => updateField("region", v)} prefilled={!isNew && !!form.region} placeholder="예) 서울 강남구" />
                 </div>
                 <Field label="자기소개 한 줄" value={form.introOneLiner} onChange={(v) => updateField("introOneLiner", v)} prefilled={!isNew && !!form.introOneLiner} placeholder="예) 사이드 프로젝트로 SaaS 만들고 있습니다" />
 

@@ -204,7 +204,7 @@ export default function NetworkSection() {
             className="text-ivory/40 text-sm mb-6"
             style={{ fontFamily: "var(--font-body)", fontWeight: 300 }}
           >
-            이 커뮤니티를 운영하는 두 호스트를 소개합니다.
+            이 네트워크를 만든 두 사람이 있습니다.
           </p>
           <a
             href="#hosts"

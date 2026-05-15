@@ -63,16 +63,16 @@ export default function HostSection() {
               className="text-4xl lg:text-5xl xl:text-6xl text-ivory leading-[1.05]"
               style={{ fontFamily: "var(--font-display)", fontWeight: 400 }}
             >
-              이 판을 만든<br />
+              합류 전,<br />
               <span className="text-gold-gradient italic" style={{ fontWeight: 300 }}>
-                두 사람
+                이 두 사람을 알아두세요
               </span>
             </h2>
             <p
               className="text-ivory/50 text-base leading-[1.9] lg:max-w-sm"
               style={{ fontFamily: "var(--font-body)", fontWeight: 300 }}
             >
-              박준홍과 성현두. 이 두 사람이 PNU Alliance를 만들었고, 함께 운영하고 있습니다.
+              PNU Alliance는 운영진이 모든 멤버와 1:1로 만나는 것을 원칙으로 한다. 가입 전에 이 두 사람이 어떤 사람인지 알아두는 것이 먼저다.
             </p>
           </div>
         </motion.div>
